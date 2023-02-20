@@ -1,5 +1,5 @@
 import { MikroORM } from '@mikro-orm/core';
-import { User } from './src/user/entities/user.entity';
+import { User } from './src/user/user.entity';
 
 (async () => {
     const orm = await MikroORM.init({

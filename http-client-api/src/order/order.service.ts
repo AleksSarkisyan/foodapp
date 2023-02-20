@@ -10,8 +10,6 @@ export class OrderService {
 
   }
   async getOrders(): Promise<Observable<string>> {
-    //console.log('in order service...');
-
     let message = this.client.send({ cmd: 'getOrders' }, 'test....');
     message.subscribe(el => {
       console.log('el is', el)

@@ -8,11 +8,7 @@ export class OrderController {
 
   @Get("/orders")
   async orders() {
-    console.log('in orders route...')
-    let message = await this.orderService.getOrders();
-
-    //console.log('got mess ==', message)
-    return message;
+    return await this.orderService.getOrders();
   }
 
 

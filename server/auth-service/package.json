@@ -20,14 +20,20 @@
     "test:e2e": "jest --config ./test/jest-e2e.json"
   },
   "dependencies": {
-    "@mikro-orm/core": "^5.6.8",
-    "@mikro-orm/mysql": "^5.6.8",
+    "@mikro-orm/core": "^5.6.5",
+    "@mikro-orm/entity-generator": "^5.6.5",
+    "@mikro-orm/migrations": "^5.6.5",
+    "@mikro-orm/mysql": "^5.6.5",
     "@mikro-orm/nestjs": "^5.1.6",
+    "@mikro-orm/reflection": "^5.6.5",
+    "@mikro-orm/sql-highlighter": "^1.0.1",
     "@nestjs/common": "^9.0.0",
     "@nestjs/core": "^9.0.0",
     "@nestjs/mapped-types": "*",
-    "@nestjs/microservices": "^9.2.1",
+    "@nestjs/microservices": "^9.3.9",
     "@nestjs/platform-express": "^9.0.0",
+    "class-transformer": "^0.5.1",
+    "class-validator": "^0.14.0",
     "ioredis": "^5.3.0",
     "reflect-metadata": "^0.1.13",
     "rxjs": "^7.2.0"
