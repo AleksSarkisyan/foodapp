@@ -1,39 +1,87 @@
-import { Controller, UsePipes, UseFilters } from '@nestjs/common';
+import { Controller, UsePipes, UseFilters, UseGuards, Logger } from '@nestjs/common';
 import { MessagePattern, Payload } from '@nestjs/microservices';
 import { UserService } from './user.service';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
 import { ValidationPipe } from '../shared/pipes/validation.pipe';
 import { ExceptionFilter } from 'src/filters/ExceptionFilter';
-
+import { LoginUser } from './dto/login-user';
+import { LocalAuthGuard } from './local-auth.guard';
+import { LocalStrategy } from './local.strategy';
 @Controller()
 export class UserController {
-  constructor(private readonly userService: UserService) { }
+  constructor(
+    private readonly userService: UserService,
+    private readonly localStrategy: LocalStrategy) { }
 
   @UsePipes(new ValidationPipe())
   @UseFilters(new ExceptionFilter())
   @MessagePattern({ cmd: 'createUser' })
-  create(@Payload() createUserDto: CreateUserDto) {
-    return this.userService.create(createUserDto);
+
+  /** Creates user and access token */
+  async create(@Payload() createUserDto: CreateUserDto) {
+    let user = await this.userService.create(createUserDto);
+    let shouldLogin = await this.localStrategy.validate(user.email, user.password);
+    let { email, password, name } = user;
+
+    if (shouldLogin) {
+      let tokenData: LoginUser = {
+        email,
+        password
+      }
+
+      let token = await this.userService.login(tokenData);
+
+      return {
+        user: {
+          name,
+          email
+        },
+        token,
+        error: null
+      };
+    }
+
+    return {
+      user: {
+        name,
+        email
+      },
+      error: 'Could not get token'
+    }
   }
 
-  @MessagePattern('findAllUser')
-  findAll() {
-    return this.userService.findAll();
+  @MessagePattern({ cmd: 'loginUser' })
+  async login(@Payload() loginUserDto: LoginUser) {
+    let user = await this.localStrategy.validate(loginUserDto.email, loginUserDto.password);
+
+    if (user) {
+      let token = await this.userService.login(loginUserDto);
+      let { email, name } = user;
+
+      return {
+        user: {
+          name,
+          email
+        },
+        token,
+        error: null
+      };
+    }
+
+    return {
+      error: 'Coult not log in.'
+    }
   }
 
-  @MessagePattern('findOneUser')
-  findOne(@Payload() id: number) {
-    return this.userService.findOne(id);
-  }
-
-  @MessagePattern('updateUser')
-  update(@Payload() updateUserDto: UpdateUserDto) {
-    return this.userService.update(updateUserDto.id, updateUserDto);
-  }
-
-  @MessagePattern('removeUser')
-  remove(@Payload() id: number) {
-    return this.userService.remove(id);
+  @MessagePattern({ cmd: 'isLoggedIn' })
+  async isLoggedIn(data: { jwt: string }) {
+    try {
+      return this.userService.validateToken(data.jwt);
+    } catch (e) {
+      console.log('token validation failed', e);
+      Logger.log(e);
+      return false;
+    }
   }
 }

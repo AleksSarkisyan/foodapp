@@ -3,16 +3,19 @@ import { InjectRepository } from '@mikro-orm/nestjs';
 import { Injectable, HttpException, HttpStatus } from '@nestjs/common';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
+import { LoginUser } from './dto/login-user';
 import { User } from './user.entity';
 import { validate } from 'class-validator';
 import { UserRepository } from './user.repository';
 import { RpcException } from '@nestjs/microservices';
+import { JwtService } from '@nestjs/jwt';
 
 @Injectable()
 export class UserService {
 
   constructor(
     private readonly userRepository: UserRepository,
+    private readonly jwtService: JwtService
   ) {
 
   }
@@ -36,19 +39,28 @@ export class UserService {
     return user;
   }
 
+  async login(user: LoginUser) {
+    const payload = { user, sub: user.email };
+
+    return {
+      email: user.email,
+      accessToken: this.jwtService.sign(payload)
+    };
+  }
+
+  validateToken(jwt: string) {
+    return this.jwtService.verify(jwt);
+  }
+
   findAll() {
     return `This action returns all user`;
   }
 
-  findOne(id: number) {
-    return `This action returns a #${id} user`;
+  async findOne(id: number) {
+    return await this.userRepository.findOne({ id });
   }
 
-  update(id: number, updateUserDto: UpdateUserDto) {
-    return `This action updates a #${id} user`;
-  }
-
-  remove(id: number) {
-    return `This action removes a #${id} user`;
+  async findByEmailAndPassword(email: string, password: string) {
+    return await this.userRepository.findOne({ email, password });
   }
 }

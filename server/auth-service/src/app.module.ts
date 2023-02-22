@@ -6,32 +6,11 @@ import { UserModule } from './user/user.module';
 import { User } from './user/user.entity';
 import { MikroORM } from '@mikro-orm/core';
 
-// @Module({
-//   imports: [
-//     MikroOrmModule.forRoot({
-//       entities: [User],
-//       dbName: 'auth_service',
-//       type: 'mysql',
-//     }),
-//     UserModule,
-//   ],
-//   controllers: [AppController],
-//   providers: [AppService],
-// })
-
 @Module({
   controllers: [
     AppController,
   ],
   imports: [
-    MikroOrmModule.forRoot({
-      entities: [User],
-      dbName: 'auth_service',
-      type: 'mysql',
-      user: 'root',
-      password: 'root',
-      allowGlobalContext: true
-    }),
     UserModule,
   ],
   providers: [AppService],

@@ -1,8 +1,10 @@
-import { Entity, Property, Unique, EntityRepositoryType } from "@mikro-orm/core";
+import { Entity, Property, Unique, EntityRepositoryType, BeforeCreate } from "@mikro-orm/core";
 import { IsEmail } from "class-validator";
 import { BaseEntity } from '../BaseEntity';
 import crypto from 'crypto';
 import { UserRepository } from './user.repository';
+import { hash } from 'bcrypt';
+
 
 @Entity({ customRepository: () => UserRepository })
 @Unique({ properties: ['email'] })
@@ -20,10 +22,16 @@ export class User extends BaseEntity {
     @Property()
     password!: string;
 
+    // @BeforeCreate()
+    // async hashPassword() {
+    //     this.password = await hash(this.password, 10);
+    // }
+
     constructor(name: string, email: string, password: string) {
         super();
         this.name = name;
         this.email = email;
-        this.password = crypto.createHmac('sha256', password).digest('hex');
+        // this.password = crypto.createHmac('sha256', password).digest('hex');
+        this.password = password;
     }
 }
