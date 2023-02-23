@@ -1,4 +1,4 @@
-import { EntityRepository } from '@mikro-orm/mysql';
+import { EntityRepository, MikroORM } from '@mikro-orm/mysql';
 import { InjectRepository } from '@mikro-orm/nestjs';
 import { Injectable, HttpException, HttpStatus } from '@nestjs/common';
 import { CreateUserDto } from './dto/create-user.dto';
@@ -14,8 +14,9 @@ import { JwtService } from '@nestjs/jwt';
 export class UserService {
 
   constructor(
-    private readonly userRepository: UserRepository,
-    private readonly jwtService: JwtService
+    private readonly jwtService: JwtService,
+    @InjectRepository(User)
+    private readonly userRepository: EntityRepository<User>,
   ) {
 
   }

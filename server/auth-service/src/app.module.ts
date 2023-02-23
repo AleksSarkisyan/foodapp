@@ -5,6 +5,7 @@ import { MikroOrmModule } from '@mikro-orm/nestjs';
 import { UserModule } from './user/user.module';
 import { User } from './user/user.entity';
 import { MikroORM } from '@mikro-orm/core';
+import { ConfigModule, ConfigService } from '@nestjs/config';
 
 @Module({
   controllers: [
@@ -12,20 +13,24 @@ import { MikroORM } from '@mikro-orm/core';
   ],
   imports: [
     UserModule,
+    ConfigModule.forRoot({
+      isGlobal: true
+    }),
+    MikroOrmModule.forRootAsync({
+      imports: [ConfigModule],
+      inject: [ConfigService],
+      useFactory: (configService: ConfigService) => ({
+        dbName: configService.get('DB_NAME'),
+        user: configService.get('DB_USER'),
+        password: configService.get('DB_PASSWORD'),
+        type: 'mysql',
+        autoLoadEntities: true,
+        allowGlobalContext: true
+      }),
+    }),
   ],
-  providers: [AppService],
+  providers: [AppService, MikroOrmModule],
 })
-export class AppModule implements NestModule, OnModuleInit {
-
-  constructor(private readonly orm: MikroORM) { }
-
-  async onModuleInit(): Promise<void> {
-    console.log('init...');
-    // await this.orm.getMigrator().up();
-  }
-
-  configure(consumer: MiddlewareConsumer) {
-
-  }
+export class AppModule {
 
 }

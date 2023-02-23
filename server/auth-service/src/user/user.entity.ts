@@ -6,11 +6,12 @@ import { UserRepository } from './user.repository';
 import { hash } from 'bcrypt';
 
 
-@Entity({ customRepository: () => UserRepository })
+// @Entity({ customRepository: () => UserRepository })
+@Entity()
 @Unique({ properties: ['email'] })
 export class User extends BaseEntity {
 
-    [EntityRepositoryType]?: UserRepository;
+    // [EntityRepositoryType]?: UserRepository;
 
     @Property()
     name!: string;
