@@ -5,9 +5,8 @@ import { UserService } from './user.service';
 import { MikroOrmModule } from '@mikro-orm/nestjs';
 import { JwtModule } from '@nestjs/jwt';
 import { LocalStrategy } from './local.strategy';
-import { ConfigService } from '@nestjs/config';
+import { ConfigModule, ConfigService } from '@nestjs/config';
 import { UserRepository } from './user.repository';
-import { MikroORM } from '@mikro-orm/mysql';
 
 
 @Module({
@@ -17,10 +16,14 @@ import { MikroORM } from '@mikro-orm/mysql';
   exports: [UserService],
   imports: [
     MikroOrmModule.forFeature([User]),
-    JwtModule.register({
-      secret: 'rgregre',
-      privateKey: 'pessho',
-      signOptions: { expiresIn: '900s' },
+    JwtModule.registerAsync({
+      imports: [ConfigModule],
+      useFactory: async (configService: ConfigService) => ({
+        secret: configService.get<string>('JWT_SECRET'),
+        privateKey: configService.get<string>('JWT_PRIVATE_KEY'),
+        signOptions: { expiresIn: '900s' }
+      }),
+      inject: [ConfigService],
     }),
     UserRepository
   ],

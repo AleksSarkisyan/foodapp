@@ -1,14 +1,12 @@
-import { EntityRepository, MikroORM } from '@mikro-orm/mysql';
+import { EntityRepository } from '@mikro-orm/mysql';
 import { InjectRepository } from '@mikro-orm/nestjs';
-import { Injectable, HttpException, HttpStatus } from '@nestjs/common';
-import { CreateUserDto } from './dto/create-user.dto';
-import { UpdateUserDto } from './dto/update-user.dto';
-import { LoginUser } from './dto/login-user';
+import { Injectable } from '@nestjs/common';
 import { User } from './user.entity';
 import { validate } from 'class-validator';
-import { UserRepository } from './user.repository';
 import { RpcException } from '@nestjs/microservices';
 import { JwtService } from '@nestjs/jwt';
+import { CreateUserDto } from './dto/create-user.dto';
+import { LoginUser } from './dto/login-user';
 
 @Injectable()
 export class UserService {

@@ -1,13 +1,12 @@
-import { Controller, UsePipes, UseFilters, UseGuards, Logger } from '@nestjs/common';
+import { Controller, UsePipes, UseFilters, Logger } from '@nestjs/common';
 import { MessagePattern, Payload } from '@nestjs/microservices';
 import { UserService } from './user.service';
-import { CreateUserDto } from './dto/create-user.dto';
-import { UpdateUserDto } from './dto/update-user.dto';
 import { ValidationPipe } from '../shared/pipes/validation.pipe';
 import { ExceptionFilter } from 'src/filters/ExceptionFilter';
-import { LoginUser } from './dto/login-user';
-import { LocalAuthGuard } from './local-auth.guard';
 import { LocalStrategy } from './local.strategy';
+import { CreateUserDto } from './dto/create-user.dto';
+import { LoginUser } from './dto/login-user';
+
 @Controller()
 export class UserController {
   constructor(
