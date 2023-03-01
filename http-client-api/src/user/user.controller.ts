@@ -19,7 +19,7 @@ export class UserController {
     return await this.userService.login(loginUserDto);
   }
 
-  @UseGuards(UserAuthorizedGuard)
+  @UseGuards(UserAuthorizedGuard('AUTH_SERVICE'))
   @Get('greet')
   async greet(): Promise<string> {
     return 'Auth works...';

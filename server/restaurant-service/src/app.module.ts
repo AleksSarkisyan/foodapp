@@ -5,11 +5,16 @@ import { UserModule } from './user/user.module';
 import { SequelizeModule } from '@nestjs/sequelize';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { User } from './user/entities/user.entity';
+import { JwtModule } from '@nestjs/jwt';
+import { LocalStrategy } from './user/local.strategy';
+import { UserService } from './user/user.service';
 
 @Module({
   imports: [
     SequelizeModule.forRootAsync({
-      imports: [ConfigModule.forRoot()],
+      imports: [
+        ConfigModule.forRoot(),
+      ],
       useFactory: (configService: ConfigService) => ({
         dialect: 'mysql',
         host: configService.get('DB_HOST'),
@@ -27,6 +32,6 @@ import { User } from './user/entities/user.entity';
     }),
     UserModule],
   controllers: [AppController],
-  providers: [AppService],
+  providers: [AppService, LocalStrategy],
 })
 export class AppModule { }
