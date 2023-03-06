@@ -5,9 +5,14 @@ import { UserModule } from './user/user.module';
 import { SequelizeModule } from '@nestjs/sequelize';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { User } from './user/entities/user.entity';
+import { Menu } from './menu/entities/menu.entity';
 import { JwtModule } from '@nestjs/jwt';
 import { LocalStrategy } from './user/local.strategy';
 import { UserService } from './user/user.service';
+import { MenuModule } from './menu/menu.module';
+import { RestaurantModule } from './restaurant/restaurant.module';
+import { Restaurant } from './restaurant/entities/restaurant.entity';
+
 
 @Module({
   imports: [
@@ -26,11 +31,13 @@ import { UserService } from './user/user.service';
           timestamps: true,
           underscored: true
         },
-        models: [User],
+        models: [User, Menu, Restaurant],
       }),
       inject: [ConfigService],
     }),
-    UserModule],
+    UserModule,
+    MenuModule,
+    RestaurantModule],
   controllers: [AppController],
   providers: [AppService, LocalStrategy],
 })

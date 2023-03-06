@@ -3,6 +3,8 @@ import { RestaurantService } from './restaurant.service';
 import { CreateRestaurantUserDto } from './dto/create-restaurant-user.dto';
 import { LoginUser } from 'src/user/dto/login-user';
 import { UserAuthorizedGuard } from 'src/guards/UserAuthorizedGuard';
+import { CreateMenuDto } from './dto/create-menu.';
+import { CreateRestaurantDto } from './dto/create-restaurant.dto';
 
 @Controller('restaurant')
 export class RestaurantController {
@@ -16,6 +18,17 @@ export class RestaurantController {
   @Post('/user/login')
   async login(@Body() loginUserDto: LoginUser) {
     return await this.restaurantService.login(loginUserDto);
+  }
+
+  @UseGuards(UserAuthorizedGuard('RESTAURANT_SERVICE'))
+  @Post('/create')
+  async createRestaurant(@Body() createRestaurantDto: CreateRestaurantDto) {
+    return await this.restaurantService.createRestaurant(createRestaurantDto);
+  }
+
+  @Post('/menu/create')
+  async createRestaurantmenu(@Body() createMenuDto: CreateMenuDto) {
+    return await this.restaurantService.createMenu(createMenuDto);
   }
 
   @UseGuards(UserAuthorizedGuard('RESTAURANT_SERVICE'))
