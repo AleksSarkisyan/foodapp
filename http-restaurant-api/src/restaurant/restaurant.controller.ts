@@ -1,7 +1,8 @@
-import { Controller, Get, Post, Body, UseGuards } from '@nestjs/common';
+import { Controller, Get, Post, Body, UseGuards, Headers } from '@nestjs/common';
 import { RestaurantService } from './restaurant.service';
 import { UserAuthorizedGuard } from 'src/guards/UserAuthorizedGuard';
 import { CreateRestaurantDto } from './dto/create-restaurant.dto';
+import { UpdateRestaurantDto } from './dto/update-restaurant.dto';
 
 @Controller('restaurant')
 export class RestaurantController {
@@ -14,8 +15,9 @@ export class RestaurantController {
   }
 
   @UseGuards(UserAuthorizedGuard('RESTAURANT_SERVICE'))
-  @Get('/greet')
-  async greet(): Promise<string> {
-    return 'Restaurant auth works...';
+  @Post('/update')
+  async update(@Body() updateRestaurantDto: UpdateRestaurantDto, @Headers() headers): Promise<string> {
+    updateRestaurantDto.token = headers['authorization'];
+    return await this.restaurantService.update(updateRestaurantDto);
   }
 }

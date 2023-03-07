@@ -1,4 +1,5 @@
-import { Column, Model, Table, PrimaryKey, CreatedAt, UpdatedAt, Unique, AutoIncrement } from 'sequelize-typescript';
+import { Column, Model, Table, PrimaryKey, CreatedAt, UpdatedAt, Unique, AutoIncrement, HasMany } from 'sequelize-typescript';
+import { Restaurant } from 'src/restaurant/entities/restaurant.entity';
 
 @Table({
     tableName: 'user'
@@ -27,4 +28,7 @@ export class User extends Model {
 
     @UpdatedAt
     updatedAt: Date = new Date();
+
+    @HasMany(() => Restaurant)
+    restaurants: Restaurant[];
 }

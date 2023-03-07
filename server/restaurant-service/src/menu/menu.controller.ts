@@ -10,7 +10,6 @@ export class MenuController {
 
   @MessagePattern({ cmd: 'createMenu' })
   create(@Payload() createMenuDto: CreateMenuDto) {
-    console.log('createMenuDto is-', createMenuDto)
     return this.menuService.create(createMenuDto);
   }
 

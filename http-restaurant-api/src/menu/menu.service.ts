@@ -8,7 +8,6 @@ export class MenuService {
   constructor(@Inject('RESTAURANT_SERVICE') public client: ClientProxy) { }
 
   async create(createMenuDto: CreateMenuDto) {
-    console.log('createMenuDto is', createMenuDto)
     let message = this.client.send({ cmd: 'createMenu' }, createMenuDto);
 
     return await firstValueFrom(message);
