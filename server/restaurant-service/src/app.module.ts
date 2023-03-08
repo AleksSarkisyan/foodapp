@@ -12,7 +12,8 @@ import { UserService } from './user/user.service';
 import { MenuModule } from './menu/menu.module';
 import { RestaurantModule } from './restaurant/restaurant.module';
 import { Restaurant } from './restaurant/entities/restaurant.entity';
-
+import { CategoryModule } from './category/category.module';
+import { Category } from './category/entities/category.entity';
 
 @Module({
   imports: [
@@ -31,13 +32,14 @@ import { Restaurant } from './restaurant/entities/restaurant.entity';
           timestamps: true,
           underscored: true
         },
-        models: [User, Menu, Restaurant],
+        models: [User, Menu, Restaurant, Category],
       }),
       inject: [ConfigService],
     }),
     UserModule,
     MenuModule,
-    RestaurantModule],
+    RestaurantModule,
+    CategoryModule],
   controllers: [AppController],
   providers: [AppService, LocalStrategy],
 })
