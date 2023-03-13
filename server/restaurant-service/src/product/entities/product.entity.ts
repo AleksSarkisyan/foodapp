@@ -1,11 +1,11 @@
 import { Column, Model, Table, PrimaryKey, CreatedAt, UpdatedAt, Unique, AutoIncrement, BelongsTo, ForeignKey } from 'sequelize-typescript';
-import { Menu } from 'src/menu/entities/menu.entity';
+import { Category } from 'src/category/entities/category.entity';
 import { User } from 'src/user/entities/user.entity';
 
 @Table({
-    tableName: 'restaurants'
+    tableName: 'products'
 })
-export class Restaurant extends Model {
+export class Product extends Model {
     @AutoIncrement
     @PrimaryKey
     @Column
@@ -15,9 +15,31 @@ export class Restaurant extends Model {
     @Column
     name: string;
 
+    @Column
+    description: string;
+
     @Unique
     @Column
-    city: string;
+    price: number;
+
+    @Column
+    promoPrice: number;
+
+    @Column
+    imageUrl: string;
+
+    @Column
+    slug: string;
+
+    @Unique
+    @Column
+    weight: string;
+
+    @Column
+    isPromo: boolean;
+
+    @Column
+    isActive: boolean;
 
     @CreatedAt
     createdAt: Date = new Date();
@@ -33,10 +55,11 @@ export class Restaurant extends Model {
     @BelongsTo(() => User)
     user: User;
 
-    @ForeignKey(() => Menu)
+    @ForeignKey(() => Category)
+    @Unique
     @Column
-    menuId: number;
+    categoryId: number;
 
-    @BelongsTo(() => Menu)
-    menu: Menu;
+    @BelongsTo(() => Category)
+    category: Category;
 }

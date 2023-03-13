@@ -5,11 +5,12 @@ export class CreateRestaurantDto {
     menuId: number;
     name: string;
     city: string;
+    token: string;
 }
 
 export const createRestaurantSchema = Joi.object({
-    userId: Joi.number().required(),
     menuId: Joi.number().optional(),
     name: Joi.string().required(),
     city: Joi.string().required(),
+    token: Joi.string().required()
 })

@@ -1,4 +1,5 @@
 import { Column, Model, Table, PrimaryKey, CreatedAt, UpdatedAt, Unique, AutoIncrement, HasMany } from 'sequelize-typescript';
+import { Product } from 'src/product/entities/product.entity';
 import { Restaurant } from 'src/restaurant/entities/restaurant.entity';
 
 @Table({
@@ -31,4 +32,7 @@ export class User extends Model {
 
     @HasMany(() => Restaurant)
     restaurants: Restaurant[];
+
+    @HasMany(() => Product)
+    products: Product[];
 }

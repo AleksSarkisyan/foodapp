@@ -20,14 +20,4 @@ export class RestaurantController {
   update(@Payload() updateRestaurantDto: UpdateRestaurantDto) {
     return this.restaurantService.update(updateRestaurantDto);
   }
-
-  @MessagePattern({ cmd: 'findAllRestaurant' })
-  findAll() {
-    return this.restaurantService.findAll();
-  }
-
-  @MessagePattern('findOneRestaurant')
-  findOne(@Payload() id: number) {
-    return this.restaurantService.findOne(id);
-  }
 }

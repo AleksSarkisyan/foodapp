@@ -1,4 +1,6 @@
-import { Column, Model, Table, PrimaryKey, CreatedAt, UpdatedAt, Unique, AutoIncrement } from 'sequelize-typescript';
+import { Column, Model, Table, PrimaryKey, CreatedAt, UpdatedAt, Unique, AutoIncrement, ForeignKey, BelongsTo } from 'sequelize-typescript';
+import { User } from 'src/user/entities/user.entity';
+
 
 @Table({
     tableName: 'menus'
@@ -8,10 +10,6 @@ export class Menu extends Model {
     @PrimaryKey
     @Column
     id: number;
-
-    @Unique
-    @Column
-    userId: number;
 
     @Unique
     @Column
@@ -31,4 +29,13 @@ export class Menu extends Model {
 
     @UpdatedAt
     updatedAt: Date = new Date();
+
+
+    @ForeignKey(() => User)
+    @Unique
+    @Column
+    userId: number;
+
+    @BelongsTo(() => User)
+    user: User;
 }

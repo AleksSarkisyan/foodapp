@@ -34,6 +34,14 @@ export class UserService {
     });
   }
 
+  async findByEmail(email: string) {
+    return await this.userModel.findOne({
+      where: {
+        email
+      },
+    });
+  }
+
   async login(user: LoginUser) {
     const payload = { user, sub: user.email };
 
@@ -41,6 +49,14 @@ export class UserService {
       email: user.email,
       accessToken: this.jwtService.sign(payload)
     };
+  }
+
+  async getUserFromToken(token: string) {
+    let tokenData = this.jwtService.decode(token);
+    let userData = tokenData['user'];
+    let email = userData.email;
+
+    return this.findByEmail(email);
   }
 
   validateToken(jwt: string) {

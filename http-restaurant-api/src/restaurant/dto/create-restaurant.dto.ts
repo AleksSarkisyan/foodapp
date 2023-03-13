@@ -3,4 +3,5 @@ export class CreateRestaurantDto {
     menuId: number;
     name: string;
     city: string;
+    token: string;
 }

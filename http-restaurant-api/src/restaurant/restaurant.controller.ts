@@ -10,7 +10,8 @@ export class RestaurantController {
 
   @UseGuards(UserAuthorizedGuard('RESTAURANT_SERVICE'))
   @Post('/create')
-  async create(@Body() createRestaurantDto: CreateRestaurantDto) {
+  async create(@Body() createRestaurantDto: CreateRestaurantDto, @Headers() headers) {
+    createRestaurantDto.token = headers['authorization'];
     return await this.restaurantService.create(createRestaurantDto);
   }
 
