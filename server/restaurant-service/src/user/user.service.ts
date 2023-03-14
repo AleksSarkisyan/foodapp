@@ -1,26 +1,65 @@
+import { CreateRestaurantUserDto } from './dto/create-restaurant-user.dto';
 import { Injectable } from '@nestjs/common';
-import { CreateUserDto } from './dto/create-user.dto';
-import { UpdateUserDto } from './dto/update-user.dto';
+import { InjectModel } from '@nestjs/sequelize';
+import { User } from './entities/user.entity';
+import { LoginUser } from './dto/login-user';
+import { JwtService } from '@nestjs/jwt';
 
 @Injectable()
 export class UserService {
-  create(createUserDto: CreateUserDto) {
-    return 'This action adds a new user';
-  }
+  constructor(
+    private readonly jwtService: JwtService,
+    @InjectModel(User)
+    private userModel: typeof User,
+  ) { }
 
-  findAll() {
-    return `This action returns all user`;
+  create(createRestaurantUserDto: CreateRestaurantUserDto) {
+    return this.userModel.create({ ...createRestaurantUserDto });
   }
 
   findOne(id: number) {
-    return `This action returns a #${id} user`;
+    return this.userModel.findOne({
+      where: {
+        id,
+      },
+    });
   }
 
-  update(id: number, updateUserDto: UpdateUserDto) {
-    return `This action updates a #${id} user`;
+  async findByEmailAndPassword(email: string, password: string) {
+    return await this.userModel.findOne({
+      where: {
+        email,
+        password
+      },
+    });
   }
 
-  remove(id: number) {
-    return `This action removes a #${id} user`;
+  async findByEmail(email: string) {
+    return await this.userModel.findOne({
+      where: {
+        email
+      },
+    });
+  }
+
+  async login(user: LoginUser) {
+    const payload = { user, sub: user.email };
+
+    return {
+      email: user.email,
+      accessToken: this.jwtService.sign(payload)
+    };
+  }
+
+  async getUserFromToken(token: string) {
+    let tokenData = this.jwtService.decode(token);
+    let userData = tokenData['user'];
+    let email = userData.email;
+
+    return this.findByEmail(email);
+  }
+
+  validateToken(jwt: string) {
+    return this.jwtService.verify(jwt);
   }
 }
