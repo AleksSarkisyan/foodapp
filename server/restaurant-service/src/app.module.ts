@@ -14,6 +14,8 @@ import { CategoryModule } from './category/category.module';
 import { Category } from './category/entities/category.entity';
 import { ProductModule } from './product/product.module';
 import { Product } from './product/entities/product.entity';
+import { MenuProductModule } from './menu-product/menu-product.module';
+import { MenuProduct } from './menu-product/entities/menu-product.entity';
 
 @Module({
   imports: [
@@ -32,7 +34,7 @@ import { Product } from './product/entities/product.entity';
           timestamps: true,
           underscored: true
         },
-        models: [User, Menu, Restaurant, Category, Product],
+        models: [User, Menu, Restaurant, Category, Product, MenuProduct],
       }),
       inject: [ConfigService],
     }),
@@ -40,7 +42,8 @@ import { Product } from './product/entities/product.entity';
     MenuModule,
     RestaurantModule,
     CategoryModule,
-    ProductModule],
+    ProductModule,
+    MenuProductModule],
   controllers: [AppController],
   providers: [AppService, LocalStrategy],
 })

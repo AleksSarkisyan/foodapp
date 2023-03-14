@@ -1,6 +1,8 @@
-import { Column, Model, Table, PrimaryKey, CreatedAt, UpdatedAt, Unique, AutoIncrement, BelongsTo, ForeignKey } from 'sequelize-typescript';
+import { Column, Model, Table, PrimaryKey, CreatedAt, UpdatedAt, Unique, AutoIncrement, BelongsTo, ForeignKey, BelongsToMany } from 'sequelize-typescript';
 import { Category } from 'src/category/entities/category.entity';
 import { User } from 'src/user/entities/user.entity';
+import { Menu } from 'src/menu/entities/menu.entity';
+import { MenuProduct } from 'src/menu-product/entities/menu-product.entity';
 
 @Table({
     tableName: 'products'
@@ -62,4 +64,8 @@ export class Product extends Model {
 
     @BelongsTo(() => Category)
     category: Category;
+
+    @BelongsToMany(() => Menu, () => MenuProduct)
+    menus: Menu[]
+
 }
