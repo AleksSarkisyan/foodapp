@@ -1,11 +1,10 @@
 import { Injectable } from '@nestjs/common';
-import { JwtService } from '@nestjs/jwt';
 import { InjectModel } from '@nestjs/sequelize';
 import { CreateRestaurantDto } from './dto/create-restaurant.dto';
 import { UpdateRestaurantDto } from './dto/update-restaurant.dto';
 import { Restaurant } from './entities/restaurant.entity';
 import { UserService } from 'src/user/user.service';
-
+import { Op } from 'sequelize';
 
 @Injectable()
 export class RestaurantService {
@@ -32,5 +31,16 @@ export class RestaurantService {
           id: updateRestaurantDto.restaurantId
         }
       });
+  }
+
+  async findAll() {
+    return this.restaurantModel.findAll({
+      attributes: ['id', 'name', 'city', 'menuId'],
+      where: {
+        menuId: {
+          [Op.not]: null
+        }
+      }
+    });
   }
 }

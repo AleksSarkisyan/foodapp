@@ -1,5 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/sequelize';
+import { Product } from 'src/product/entities/product.entity';
 import { UserService } from 'src/user/user.service';
 import { CreateMenuProductDto } from './dto/create-menu-product.dto';
 import { MenuProduct } from './entities/menu-product.entity';
