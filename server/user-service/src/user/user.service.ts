@@ -62,4 +62,18 @@ export class UserService {
   async findByEmailAndPassword(email: string, password: string) {
     return await this.userRepository.findOne({ email, password });
   }
+
+  async findByEmail(email: string) {
+    return await this.userRepository.findOne({
+      email
+    });
+  }
+
+  async getUserFromToken(token: string) {
+    let tokenData = this.jwtService.decode(token);
+    let userData = tokenData['user'];
+    let email = userData.email;
+
+    return this.findByEmail(email);
+  }
 }

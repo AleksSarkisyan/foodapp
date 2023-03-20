@@ -1,5 +1,13 @@
+type OrderProducts = {
+    productId: number;
+    quantity: number;
+}
+
 export class CreateOrderDto {
-    name: string;
+    userId: number;
+    products: OrderProducts[];
     totalPrice: number;
-    products: [];
+    totalQuantity: number;
+    restaurantId: number;
+    token: string;
 }

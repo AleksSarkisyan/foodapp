@@ -43,4 +43,13 @@ export class RestaurantService {
       }
     });
   }
+
+  async findOne(restaurantId: number) {
+    return this.restaurantModel.findOne({
+      attributes: ['userId'],
+      where: {
+        id: restaurantId,
+      },
+    });
+  }
 }

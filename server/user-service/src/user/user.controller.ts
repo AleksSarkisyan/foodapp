@@ -83,4 +83,16 @@ export class UserController {
       return false;
     }
   }
+  @MessagePattern({ cmd: 'getUserFromToken' })
+  async getUserFromToken(token: string) {
+    try {
+      return this.userService.getUserFromToken(token);
+    } catch (e) {
+      console.log('token validation failed', e);
+      Logger.log(e);
+      return false;
+    }
+  }
+
+
 }

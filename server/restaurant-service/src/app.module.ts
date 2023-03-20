@@ -16,6 +16,10 @@ import { ProductModule } from './product/product.module';
 import { Product } from './product/entities/product.entity';
 import { MenuProductModule } from './menu-product/menu-product.module';
 import { MenuProduct } from './menu-product/entities/menu-product.entity';
+import { OrderModule } from './order/order.module';
+import { Order } from './order/entities/order.entity';
+import { OrderProductModule } from './order-product/order-product.module';
+import { OrderProduct } from './order-product/entities/order-product.entity';
 
 @Module({
   imports: [
@@ -34,7 +38,7 @@ import { MenuProduct } from './menu-product/entities/menu-product.entity';
           timestamps: true,
           underscored: true
         },
-        models: [User, Menu, Restaurant, Category, Product, MenuProduct],
+        models: [User, Menu, Restaurant, Category, Product, MenuProduct, Order, OrderProduct],
       }),
       inject: [ConfigService],
     }),
@@ -43,7 +47,9 @@ import { MenuProduct } from './menu-product/entities/menu-product.entity';
     RestaurantModule,
     CategoryModule,
     ProductModule,
-    MenuProductModule],
+    MenuProductModule,
+    OrderModule,
+    OrderProductModule],
   controllers: [AppController],
   providers: [AppService, LocalStrategy],
 })

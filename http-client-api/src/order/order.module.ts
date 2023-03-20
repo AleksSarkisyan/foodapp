@@ -7,7 +7,15 @@ import { ClientsModule, Transport } from '@nestjs/microservices';
   imports: [
     ClientsModule.register([
       {
-        name: 'ORDER_SERVICE',
+        name: 'RESTAURANT_SERVICE',
+        transport: Transport.REDIS,
+        options: {
+          host: 'localhost',
+          port: 6379,
+        }
+      },
+      {
+        name: 'USER_SERVICE',
         transport: Transport.REDIS,
         options: {
           host: 'localhost',

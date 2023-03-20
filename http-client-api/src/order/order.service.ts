@@ -1,12 +1,14 @@
 import { Inject, Injectable } from '@nestjs/common';
 import { ClientProxy } from '@nestjs/microservices';
-import { Observable } from 'rxjs';
+import { firstValueFrom, Observable } from 'rxjs';
 import { CreateOrderDto } from './dto/create-order.dto';
 import { UpdateOrderDto } from './dto/update-order.dto';
-
 @Injectable()
 export class OrderService {
-  constructor(@Inject('ORDER_SERVICE') public client: ClientProxy) {
+  constructor(
+    @Inject('RESTAURANT_SERVICE') public client: ClientProxy,
+    @Inject('USER_SERVICE') public userClient: ClientProxy
+  ) {
 
   }
   async getOrders(): Promise<Observable<string>> {
@@ -18,23 +20,15 @@ export class OrderService {
 
     return message;
   }
-  create(createOrderDto: CreateOrderDto) {
-    return 'This action adds a new order';
+  async create(createOrderDto: CreateOrderDto) {
+    let userToken = this.userClient.send({ cmd: 'getUserFromToken' }, createOrderDto.token);
+    let user = await firstValueFrom(userToken);
+    createOrderDto.userId = user.id;
+
+    let message = this.client.send({ cmd: 'createOrder' }, createOrderDto);
+
+    return await firstValueFrom(message);
   }
 
-  findAll() {
-    return `This action returns all order`;
-  }
 
-  findOne(id: number) {
-    return `This action returns a #${id} order`;
-  }
-
-  update(id: number, updateOrderDto: UpdateOrderDto) {
-    return `This action updates a #${id} order`;
-  }
-
-  remove(id: number) {
-    return `This action removes a #${id} order`;
-  }
 }

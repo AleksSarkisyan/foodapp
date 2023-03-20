@@ -7,10 +7,11 @@ import { MenuModule } from './menu/menu.module';
 import { CategoryModule } from './category/category.module';
 import { ProductModule } from './product/product.module';
 import { MenuProductModule } from './menu-product/menu-product.module';
+import { SampleGateway } from './sample/sample.gateway';
 
 @Module({
   imports: [RestaurantModule, UserModule, MenuModule, CategoryModule, ProductModule, MenuProductModule],
   controllers: [AppController],
-  providers: [AppService],
+  providers: [AppService, SampleGateway],
 })
 export class AppModule { }
