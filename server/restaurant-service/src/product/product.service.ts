@@ -27,7 +27,7 @@ export class ProductService {
     let { restaurantUserId, productIds } = findRestaurantProductsDto;
 
     return this.productModel.findAll({
-      attributes: ['id', 'price'],
+      attributes: ['id', 'price', 'name', 'weight', 'description'],
       where: {
         userId: restaurantUserId,
         id: {

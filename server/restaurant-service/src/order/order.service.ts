@@ -27,25 +27,28 @@ export class OrderService {
       restaurantUserId: restaurantUserId.userId,
       productIds
     });
-    const totalPrice = this.calculateTotal(availableProducts, 'price');
 
     const orderData = {
       userId,
       restaurantId,
       totalQuantity,
-      totalPrice,
+      totalPrice: 0,
       status: 'CREATED'
     }
 
-    const order = await this.orderModel.create({ ...orderData })
+    const order = await this.orderModel.create({ ...orderData });
 
     let orderProductsData = [];
     for (let [key, product] of Object.entries(availableProducts)) {
       createOrderDto.products.find((orderDto) => {
         if (orderDto.productId == product.id) {
           orderProductsData.push({
+            name: product.name,
+            description: product.description,
+            weight: product.weight,
             productId: product.id,
             price: product.price,
+            productsPrice: product.price * orderDto.quantity,
             quantity: orderDto.quantity,
             orderId: order.id
           })
@@ -53,9 +56,32 @@ export class OrderService {
       })
     }
 
-    await this.orderProductService.create({ products: orderProductsData });
+    let result = await this.orderProductService.create({ products: orderProductsData });
 
-    return createOrderDto;
+    if (result.length) {
+      let totalPrice = await this.orderProductService.getOrderTotal(order.id);
+      totalPrice = totalPrice[0][0]['totalPrice'];
+
+      await this.orderModel.update(
+        { totalPrice },
+        {
+          where: {
+            id: order.id
+          }
+        }
+      );
+
+      let additional = {
+        totalQuantity,
+        totalPrice,
+        status: 'CREATED'
+      }
+
+      return {
+        productData: orderProductsData,
+        additional
+      };
+    }
   }
 
   calculateTotal(array: readonly (Product | OrderProduct)[], key: string) {

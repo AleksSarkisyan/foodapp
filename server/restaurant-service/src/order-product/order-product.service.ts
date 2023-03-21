@@ -13,4 +13,13 @@ export class OrderProductService {
     return await this.orderProductModel.bulkCreate(createOrderProductDto.products);
   }
 
+  async getOrderTotal(orderId: number) {
+    return await OrderProduct.sequelize.query(`
+      SELECT SUM(quantity) AS quantity,
+      SUM(price * quantity) AS totalPrice
+      FROM order_products 
+      WHERE order_products.order_id = ${orderId};
+    `);
+  }
+
 }

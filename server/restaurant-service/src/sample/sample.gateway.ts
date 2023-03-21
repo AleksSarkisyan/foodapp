@@ -15,7 +15,7 @@ export class SampleGateway {
   @WebSocketServer()
   server: Server;
 
-  @SubscribeMessage('createMessage')
+  @SubscribeMessage('orderCreated')
   create(@MessageBody() payload: any) {
     console.log('payload: ', payload);
 

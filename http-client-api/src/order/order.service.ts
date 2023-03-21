@@ -3,11 +3,14 @@ import { ClientProxy } from '@nestjs/microservices';
 import { firstValueFrom, Observable } from 'rxjs';
 import { CreateOrderDto } from './dto/create-order.dto';
 import { UpdateOrderDto } from './dto/update-order.dto';
+import { OrderGateway } from './order.gateway';
+
 @Injectable()
 export class OrderService {
   constructor(
     @Inject('RESTAURANT_SERVICE') public client: ClientProxy,
-    @Inject('USER_SERVICE') public userClient: ClientProxy
+    @Inject('USER_SERVICE') public userClient: ClientProxy,
+    private orderGateway: OrderGateway
   ) {
 
   }
@@ -16,7 +19,6 @@ export class OrderService {
     message.subscribe(el => {
       console.log('el is', el)
     })
-    //console.log('got message', message)
 
     return message;
   }
@@ -27,7 +29,12 @@ export class OrderService {
 
     let message = this.client.send({ cmd: 'createOrder' }, createOrderDto);
 
-    return await firstValueFrom(message);
+    let orderResult = await firstValueFrom(message)
+
+    this.orderGateway.server.emit('orderCreated', JSON.stringify(orderResult))
+
+    return orderResult;
+
   }
 
 
