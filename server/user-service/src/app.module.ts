@@ -1,36 +1,34 @@
-import { MiddlewareConsumer, Module, NestModule, OnModuleInit } from '@nestjs/common';
+import { Module } from '@nestjs/common';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
-import { MikroOrmModule } from '@mikro-orm/nestjs';
 import { UserModule } from './user/user.module';
-import { User } from './user/user.entity';
-import { MikroORM } from '@mikro-orm/core';
+import { SequelizeModule } from '@nestjs/sequelize';
 import { ConfigModule, ConfigService } from '@nestjs/config';
+import { User } from './user/entities/user.entity';
 
 @Module({
-  controllers: [
-    AppController,
-  ],
   imports: [
-    UserModule,
-    ConfigModule.forRoot({
-      isGlobal: true
-    }),
-    MikroOrmModule.forRootAsync({
-      imports: [ConfigModule],
-      inject: [ConfigService],
+    SequelizeModule.forRootAsync({
+      imports: [
+        ConfigModule.forRoot(),
+      ],
       useFactory: (configService: ConfigService) => ({
-        dbName: configService.get('DB_NAME'),
-        user: configService.get('DB_USER'),
+        dialect: 'mysql',
+        host: configService.get('DB_HOST'),
+        port: +3306,
+        username: configService.get('DB_USER'),
         password: configService.get('DB_PASSWORD'),
-        type: 'mysql',
-        autoLoadEntities: true,
-        allowGlobalContext: true
+        database: configService.get('DB_NAME'),
+        define: {
+          timestamps: true,
+          underscored: true
+        },
+        models: [User],
       }),
+      inject: [ConfigService],
     }),
-  ],
-  providers: [AppService, MikroOrmModule],
+    UserModule],
+  controllers: [AppController],
+  providers: [AppService],
 })
-export class AppModule {
-
-}
+export class AppModule { }
