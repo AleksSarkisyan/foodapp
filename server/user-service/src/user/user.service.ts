@@ -40,10 +40,6 @@ export class UserService {
     return this.jwtService.verify(jwt);
   }
 
-  findAll() {
-    return `This action returns all user`;
-  }
-
   async findOne(id: number) {
     return await this.userModel.findOne({ where: { id } });
   }

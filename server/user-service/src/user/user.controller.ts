@@ -2,7 +2,7 @@ import { Controller, UsePipes, UseFilters, Logger } from '@nestjs/common';
 import { MessagePattern, Payload } from '@nestjs/microservices';
 import { UserService } from './user.service';
 import { ExceptionFilter } from 'src/filters/ExceptionFilter';
-import { LocalStrategy } from './local.strategy';
+import { LocalStrategy } from './strategies/local.strategy';
 import { CreateUserDto, createUserSchema } from './dto/create-user.dto';
 import { LoginUser } from './dto/login-user';
 import { JoiValidationPipe } from 'src/shared/pipes/joi-validation-pipe';

@@ -5,6 +5,7 @@ import { RpcException } from '@nestjs/microservices';
 @Catch(RpcException)
 export class ExceptionFilter implements RpcExceptionFilter<RpcException> {
     catch(exception: RpcException, host: ArgumentsHost): Observable<any> {
+        console.log('exception.getError() is', exception.getError())
         return throwError(() => exception.getError());
     }
 }
