@@ -1,17 +1,13 @@
-import {
-    IsBoolean,
-    IsNotEmpty,
-    IsNumber,
-    IsOptional,
-    IsString,
-    IsEmail
-} from 'class-validator';
+import * as Joi from 'joi';
 
 export class CreateUserDto {
-    @IsNotEmpty()
     name: string;
-
-    @IsEmail()
     email: string;
     password: string;
 }
+
+export const createUserSchema = Joi.object({
+    name: Joi.string().required(),
+    email: Joi.string().required().email(),
+    password: Joi.string().required(),
+})

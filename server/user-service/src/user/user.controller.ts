@@ -1,11 +1,11 @@
 import { Controller, UsePipes, UseFilters, Logger } from '@nestjs/common';
 import { MessagePattern, Payload } from '@nestjs/microservices';
 import { UserService } from './user.service';
-import { ValidationPipe } from '../shared/pipes/validation.pipe';
 import { ExceptionFilter } from 'src/filters/ExceptionFilter';
 import { LocalStrategy } from './local.strategy';
-import { CreateUserDto } from './dto/create-user.dto';
+import { CreateUserDto, createUserSchema } from './dto/create-user.dto';
 import { LoginUser } from './dto/login-user';
+import { JoiValidationPipe } from 'src/shared/pipes/joi-validation-pipe';
 
 @Controller()
 export class UserController {
@@ -13,10 +13,9 @@ export class UserController {
     private readonly userService: UserService,
     private readonly localStrategy: LocalStrategy) { }
 
-  @UsePipes(new ValidationPipe())
   @UseFilters(new ExceptionFilter())
   @MessagePattern({ cmd: 'createUser' })
-
+  @UsePipes(new JoiValidationPipe(createUserSchema))
   /** Creates user and access token */
   async create(@Payload() createUserDto: CreateUserDto) {
     let user = await this.userService.create(createUserDto);
@@ -83,6 +82,7 @@ export class UserController {
       return false;
     }
   }
+
   @MessagePattern({ cmd: 'getUserFromToken' })
   async getUserFromToken(token: string) {
     try {
@@ -93,6 +93,4 @@ export class UserController {
       return false;
     }
   }
-
-
 }

@@ -1,5 +1,4 @@
 import { Injectable } from '@nestjs/common';
-import { validate } from 'class-validator';
 import { RpcException } from '@nestjs/microservices';
 import { JwtService } from '@nestjs/jwt';
 import { CreateUserDto } from './dto/create-user.dto';
@@ -20,15 +19,8 @@ export class UserService {
     const exists = await this.userModel.findOne({ where: { email } });
 
     if (exists && exists.id) {
-      throw new RpcException('User exists');
+      throw new RpcException('User already exists');
     }
-
-    // const user = new User(name, email, password);
-    // const errors = await validate(user);
-
-    // if (errors.length > 0) {
-    //   throw new RpcException('Data validation failed');
-    // }
 
     let user = await this.userModel.create({ name, email, password });
 
