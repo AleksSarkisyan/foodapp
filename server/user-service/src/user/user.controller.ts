@@ -4,8 +4,10 @@ import { UserService } from './user.service';
 import { ExceptionFilter } from 'src/filters/ExceptionFilter';
 import { LocalStrategy } from './strategies/local.strategy';
 import { CreateUserDto, createUserSchema } from './dto/create-user.dto';
-import { LoginUser } from './dto/login-user';
+import { LoginUser, loginUserSchema } from './dto/login-user.dto';
 import { JoiValidationPipe } from 'src/shared/pipes/joi-validation-pipe';
+import { IsLoggedIn, isLoggedInSchema } from './dto/is-logged-in.dto';
+import { GetUserFromToken, getUserFromTokenSchema } from './dto/get-user-from-token.dto';
 
 @Controller()
 export class UserController {
@@ -16,7 +18,7 @@ export class UserController {
   @UseFilters(new ExceptionFilter())
   @MessagePattern({ cmd: 'createUser' })
   @UsePipes(new JoiValidationPipe(createUserSchema))
-  /** Creates user and access token */
+  /** Creates user and issues access token */
   async create(@Payload() createUserDto: CreateUserDto) {
     let user = await this.userService.create(createUserDto);
     let shouldLogin = await this.localStrategy.validate(user.email, user.password);
@@ -49,7 +51,9 @@ export class UserController {
     }
   }
 
+  @UseFilters(new ExceptionFilter())
   @MessagePattern({ cmd: 'loginUser' })
+  @UsePipes(new JoiValidationPipe(loginUserSchema))
   async login(@Payload() loginUserDto: LoginUser) {
     let user = await this.localStrategy.validate(loginUserDto.email, loginUserDto.password);
 
@@ -68,12 +72,14 @@ export class UserController {
     }
 
     return {
-      error: 'Coult not log in.'
+      error: 'Could not log in.'
     }
   }
 
+  @UseFilters(new ExceptionFilter())
   @MessagePattern({ cmd: 'isLoggedIn' })
-  async isLoggedIn(data: { jwt: string }) {
+  @UsePipes(new JoiValidationPipe(isLoggedInSchema))
+  async isLoggedIn(data: IsLoggedIn) {
     try {
       return this.userService.validateToken(data.jwt);
     } catch (e) {
@@ -83,10 +89,12 @@ export class UserController {
     }
   }
 
+  @UseFilters(new ExceptionFilter())
   @MessagePattern({ cmd: 'getUserFromToken' })
-  async getUserFromToken(token: string) {
+  @UsePipes(new JoiValidationPipe(getUserFromTokenSchema))
+  async getUserFromToken(data: GetUserFromToken) {
     try {
-      return this.userService.getUserFromToken(token);
+      return this.userService.getUserFromToken(data.token);
     } catch (e) {
       console.log('token validation failed', e);
       Logger.log(e);

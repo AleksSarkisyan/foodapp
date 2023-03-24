@@ -2,7 +2,7 @@ import { Injectable } from '@nestjs/common';
 import { RpcException } from '@nestjs/microservices';
 import { JwtService } from '@nestjs/jwt';
 import { CreateUserDto } from './dto/create-user.dto';
-import { LoginUser } from './dto/login-user';
+import { LoginUser } from './dto/login-user.dto';
 import { InjectModel } from '@nestjs/sequelize';
 import { User } from './entities/user.entity';
 
@@ -29,6 +29,10 @@ export class UserService {
 
   async login(user: LoginUser) {
     const payload = { user, sub: user.email };
+
+    if (!this.jwtService.sign(payload)) {
+      throw new RpcException('Token validation failed!');
+    }
 
     return {
       email: user.email,

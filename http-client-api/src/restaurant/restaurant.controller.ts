@@ -7,7 +7,11 @@ export class RestaurantController {
 
   @Get('all')
   findAll() {
-    return this.restaurantService.findAll();
+    try {
+      return this.restaurantService.findAll();
+    } catch (error) {
+      return error;
+    }
   }
 
 }

@@ -23,7 +23,7 @@ export class OrderService {
     return message;
   }
   async create(createOrderDto: CreateOrderDto) {
-    let userToken = this.userClient.send({ cmd: 'getUserFromToken' }, createOrderDto.token);
+    let userToken = this.userClient.send({ cmd: 'getUserFromToken' }, { token: createOrderDto.token });
     let user = await firstValueFrom(userToken);
     createOrderDto.userId = user.id;
 

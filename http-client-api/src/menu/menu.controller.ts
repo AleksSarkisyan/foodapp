@@ -7,7 +7,11 @@ export class MenuController {
 
   @Get(':id')
   async findOne(@Param('id') id: string) {
-    return await this.menuService.findOne(id);
+    try {
+      return await this.menuService.findOne(id);
+    } catch (error) {
+      return error;
+    }
   }
 
 }
