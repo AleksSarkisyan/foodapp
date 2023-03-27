@@ -1,7 +1,8 @@
+import { Database } from '@asarkisyan/nestjs-foodapp-shared';
 import { Column, Model, Table, PrimaryKey, CreatedAt, UpdatedAt, Unique, AutoIncrement } from 'sequelize-typescript';
 
 @Table({
-    tableName: 'users'
+    tableName: Database.TABLE_NAME_USERS
 })
 export class User extends Model {
     @AutoIncrement

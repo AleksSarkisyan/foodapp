@@ -5,7 +5,7 @@ import { CreateUserDto } from './dto/create-user.dto';
 import { LoginUser } from './dto/login-user.dto';
 import { InjectModel } from '@nestjs/sequelize';
 import { User } from './entities/user.entity';
-
+import { ErrorMessages } from '@asarkisyan/nestjs-foodapp-shared';
 
 @Injectable()
 export class UserService {
@@ -19,7 +19,7 @@ export class UserService {
     const exists = await this.userModel.findOne({ where: { email } });
 
     if (exists && exists.id) {
-      throw new RpcException('User already exists');
+      throw new RpcException(ErrorMessages.USER_EXIST_ERROR);
     }
 
     let user = await this.userModel.create({ name, email, password });
@@ -31,7 +31,7 @@ export class UserService {
     const payload = { user, sub: user.email };
 
     if (!this.jwtService.sign(payload)) {
-      throw new RpcException('Token validation failed!');
+      throw new RpcException(ErrorMessages.TOKEN_VALIDATION_ERROR);
     }
 
     return {
