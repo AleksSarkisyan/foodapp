@@ -1,6 +1,6 @@
 {
   "name": "@asarkisyan/nestjs-foodapp-shared",
-  "version": "1.0.0",
+  "version": "1.0.4",
   "description": "A shared library for the Nest js food delivery app",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",

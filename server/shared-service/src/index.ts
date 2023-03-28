@@ -1,3 +1,5 @@
-import { UserCommands, ErrorMessages, Database } from "./enums/user.enum";
+import * as Enums from './enums/index';
 
-export { UserCommands, ErrorMessages, Database }
+export {
+    Enums
+}

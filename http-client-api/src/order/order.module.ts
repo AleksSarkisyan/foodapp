@@ -3,13 +3,14 @@ import { OrderService } from './order.service';
 import { OrderController } from './order.controller';
 import { ClientsModule, Transport } from '@nestjs/microservices';
 import { OrderGateway } from './order.gateway';
+import { Enums } from '@asarkisyan/nestjs-foodapp-shared';
 
 
 @Module({
   imports: [
     ClientsModule.register([
       {
-        name: 'RESTAURANT_SERVICE',
+        name: Enums.Restaurant.Generic.SERVICE_NAME,
         transport: Transport.REDIS,
         options: {
           host: 'localhost',
@@ -17,7 +18,7 @@ import { OrderGateway } from './order.gateway';
         }
       },
       {
-        name: 'USER_SERVICE',
+        name: Enums.User.Generic.SERVICE_NAME,
         transport: Transport.REDIS,
         options: {
           host: 'localhost',

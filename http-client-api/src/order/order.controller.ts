@@ -7,11 +7,6 @@ import { OrderService } from './order.service';
 export class OrderController {
   constructor(private readonly orderService: OrderService) { }
 
-  @Get("/get")
-  async orders() {
-    //return await this.orderService.getOrders();
-  }
-
   @Post('/create')
   async create(@Body() createOrderDto: CreateOrderDto, @Headers() headers) {
     createOrderDto.token = headers['authorization'];

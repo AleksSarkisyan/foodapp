@@ -1,11 +1,11 @@
-export enum UserCommands {
+export enum Commands {
     CREATE_USER = 'createUser',
     LOGIN_USER = 'loginUser',
     IS_LOGGED_IN = 'isLoggedIn',
     GET_USER_FROM_TOKEN = 'getUserFromToken'
 }
 
-export enum ErrorMessages {
+export enum Messages {
     TOKEN_ERROR = 'Could not get token',
     LOGIN_ERROR = 'Could not log in',
     TOKEN_VALIDATION_ERROR = 'Token validation failed',
@@ -19,4 +19,13 @@ export enum Database {
     DB_USER = 'DB_USER',
     DB_PASSWORD = 'DB_PASSWORD',
     DB_NAME = 'DB_NAME'
+}
+
+export enum Generic {
+    SERVICE_NAME = 'AUTH_SERVICE'
+}
+
+export enum Routes {
+    CREATE = 'create',
+    LOGIN = 'login'
 }

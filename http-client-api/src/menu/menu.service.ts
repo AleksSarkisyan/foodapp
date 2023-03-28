@@ -1,13 +1,15 @@
+import { Enums } from '@asarkisyan/nestjs-foodapp-shared';
 import { Inject, Injectable } from '@nestjs/common';
 import { ClientProxy } from '@nestjs/microservices';
 import { firstValueFrom } from 'rxjs';
 
+
 @Injectable()
 export class MenuService {
-  constructor(@Inject('RESTAURANT_SERVICE') public client: ClientProxy) { }
+  constructor(@Inject(Enums.Restaurant.Generic.SERVICE_NAME) public client: ClientProxy) { }
 
   async findOne(id: string) {
-    let message = this.client.send({ cmd: 'findRestaurantMenu' }, { menuId: id });
+    let message = this.client.send({ cmd: Enums.Menu.Commands.FIND_RESTAURANT_MENU }, { menuId: id });
 
     return await firstValueFrom(message);
   }

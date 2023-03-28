@@ -3,6 +3,7 @@ import { UserService } from './user.service';
 import { CreateUserDto } from './dto/create-user.dto';
 import { LoginUser } from './dto/login-user';
 import { UserAuthorizedGuard } from 'src/guards/UserAuthorizedGuard';
+import { Enums } from '@asarkisyan/nestjs-foodapp-shared';
 
 @Controller('user')
 export class UserController {
@@ -26,7 +27,7 @@ export class UserController {
     }
   }
 
-  @UseGuards(UserAuthorizedGuard('AUTH_SERVICE'))
+  @UseGuards(UserAuthorizedGuard(Enums.User.Generic.SERVICE_NAME))
   @Get('greet')
   async greet(): Promise<string> {
     return 'Auth works...';
