@@ -1,30 +1,15 @@
 import { Module } from '@nestjs/common';
 import { OrderService } from './order.service';
 import { OrderController } from './order.controller';
-import { ClientsModule, Transport } from '@nestjs/microservices';
+import { ClientsModule } from '@nestjs/microservices';
 import { OrderGateway } from './order.gateway';
-import { Enums } from '@asarkisyan/nestjs-foodapp-shared';
-
+import { RestaurantClientModuleOptions, UserCliemtModuleOptions } from 'src/shared/client-modules';
 
 @Module({
   imports: [
     ClientsModule.register([
-      {
-        name: Enums.Restaurant.Generic.SERVICE_NAME,
-        transport: Transport.REDIS,
-        options: {
-          host: 'localhost',
-          port: 6379,
-        }
-      },
-      {
-        name: Enums.User.Generic.SERVICE_NAME,
-        transport: Transport.REDIS,
-        options: {
-          host: 'localhost',
-          port: 6379,
-        }
-      }
+      RestaurantClientModuleOptions,
+      UserCliemtModuleOptions
     ])
   ],
   controllers: [OrderController],
