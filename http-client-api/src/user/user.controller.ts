@@ -1,16 +1,14 @@
 import { Controller, Get, Post, Body, UseGuards } from '@nestjs/common';
 import { UserService } from './user.service';
-import { CreateUserDto } from './dto/create-user.dto';
-import { LoginUser } from './dto/login-user';
 import { UserAuthorizedGuard } from 'src/guards/UserAuthorizedGuard';
-import { Enums } from '@asarkisyan/nestjs-foodapp-shared';
+import { Enums, Types } from '@asarkisyan/nestjs-foodapp-shared';
 
 @Controller('user')
 export class UserController {
   constructor(private readonly userService: UserService) { }
 
   @Post('/create')
-  async create(@Body() createUserDto: CreateUserDto) {
+  async create(@Body() createUserDto: Types.User.CreateUserDto) {
     try {
       return await this.userService.create(createUserDto);
     } catch (error) {
@@ -19,7 +17,7 @@ export class UserController {
   }
 
   @Post('/login')
-  async login(@Body() loginUserDto: LoginUser) {
+  async login(@Body() loginUserDto: Types.User.LoginUser) {
     try {
       return await this.userService.login(loginUserDto);
     } catch (error) {

@@ -22,7 +22,7 @@ export enum Database {
 }
 
 export enum Generic {
-    SERVICE_NAME = 'AUTH_SERVICE'
+    SERVICE_NAME = 'USER_SERVICE'
 }
 
 export enum Routes {

@@ -1,6 +1,6 @@
 {
   "name": "@asarkisyan/nestjs-foodapp-shared",
-  "version": "1.0.4",
+  "version": "1.0.6",
   "description": "A shared library for the Nest js food delivery app",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
@@ -15,12 +15,21 @@
   "license": "ISC",
   "dependencies": {
     "@nestjs/common": "^9.3.12",
+    "@nestjs/jwt": "^10.0.2",
     "@nestjs/microservices": "^9.3.12",
+    "@nestjs/passport": "^9.0.3",
     "@types/node": "^18.15.10",
     "joi": "^17.9.1",
+    "passport": "^0.6.0",
+    "passport-jwt": "^4.0.1",
+    "passport-local": "^1.0.0",
     "reflect-metadata": "^0.1.13",
     "rimraf": "^4.4.1",
     "rxjs": "^7.8.0",
     "typescript": "^5.0.2"
+  },
+  "devDependencies": {
+    "@types/passport-jwt": "^3.0.8",
+    "@types/passport-local": "^1.0.35"
   }
 }
