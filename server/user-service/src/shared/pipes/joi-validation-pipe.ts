@@ -14,7 +14,7 @@ export class JoiValidationPipe implements PipeTransform {
 
         if (error) {
             console.log('Error -', error)
-            throw new RpcException('Validation failed');
+            throw new RpcException(error);
         }
         return value;
     }

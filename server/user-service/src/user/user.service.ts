@@ -1,11 +1,9 @@
 import { Injectable } from '@nestjs/common';
 import { RpcException } from '@nestjs/microservices';
 import { JwtService } from '@nestjs/jwt';
-import { CreateUserDto } from './dto/create-user.dto';
-import { LoginUser } from './dto/login-user.dto';
 import { InjectModel } from '@nestjs/sequelize';
 import { User } from './entities/user.entity';
-import { Enums } from '@asarkisyan/nestjs-foodapp-shared';
+import { Enums, Types } from '@asarkisyan/nestjs-foodapp-shared';
 
 @Injectable()
 export class UserService {
@@ -14,20 +12,24 @@ export class UserService {
     private userModel: typeof User,
     private readonly jwtService: JwtService,
   ) { }
-  async create(createUserDto: CreateUserDto) {
-    const { name, email, password } = createUserDto;
-    const exists = await this.userModel.findOne({ where: { email } });
+  async create(createUserDto: Types.User.CreateUserDto) {
+    try {
+      const { name, email, password } = createUserDto;
+      const exists = await this.userModel.findOne({ where: { email } });
 
-    if (exists && exists.id) {
-      throw new RpcException(Enums.User.Messages.USER_EXIST_ERROR);
+      if (exists && exists.id) {
+        throw new RpcException(Enums.User.Messages.USER_EXIST_ERROR);
+      }
+
+      let user = await this.userModel.create({ name, email, password });
+
+      return user;
+    } catch (error) {
+      throw new RpcException(error);
     }
-
-    let user = await this.userModel.create({ name, email, password });
-
-    return user;
   }
 
-  async login(user: LoginUser) {
+  async login(user: Types.User.LoginUser) {
     const payload = { user, sub: user.email };
 
     if (!this.jwtService.sign(payload)) {

@@ -8,7 +8,7 @@ export class ExceptionFilter implements RpcExceptionFilter<RpcException> {
     catch(exception: RpcException, host: ArgumentsHost): Observable<any> {
         let errorObject = {
             error: true,
-            message: exception.getError()
+            message: exception.message
         }
         Logger.log(errorObject);
         return throwError(() => JSON.stringify(errorObject));

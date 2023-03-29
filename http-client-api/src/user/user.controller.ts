@@ -1,4 +1,4 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete, UseGuards } from '@nestjs/common';
+import { Controller, Get, Post, Body, UseGuards } from '@nestjs/common';
 import { UserService } from './user.service';
 import { CreateUserDto } from './dto/create-user.dto';
 import { LoginUser } from './dto/login-user';
@@ -23,6 +23,7 @@ export class UserController {
     try {
       return await this.userService.login(loginUserDto);
     } catch (error) {
+      console.log('error is', error)
       return error;
     }
   }

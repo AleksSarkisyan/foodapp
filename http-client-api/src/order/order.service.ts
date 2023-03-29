@@ -1,10 +1,8 @@
-import { Enums } from '@asarkisyan/nestjs-foodapp-shared';
+import { Enums, Types } from '@asarkisyan/nestjs-foodapp-shared';
 import { Inject, Injectable } from '@nestjs/common';
 import { ClientProxy } from '@nestjs/microservices';
 import { firstValueFrom } from 'rxjs';
-import { CreateOrderDto } from './dto/create-order.dto';
 import { OrderGateway } from './order.gateway';
-
 
 @Injectable()
 export class OrderService {
@@ -15,7 +13,7 @@ export class OrderService {
   ) {
 
   }
-  async create(createOrderDto: CreateOrderDto) {
+  async create(createOrderDto: Types.Order.CreateOrderDto) {
     let userToken = this.userClient.send({ cmd: Enums.User.Commands.GET_USER_FROM_TOKEN }, { token: createOrderDto.token });
     let user = await firstValueFrom(userToken);
     createOrderDto.userId = user.id;
