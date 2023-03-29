@@ -1,3 +1,4 @@
+import { Enums } from '@asarkisyan/nestjs-foodapp-shared';
 import {
   SubscribeMessage,
   WebSocketGateway,
@@ -15,7 +16,7 @@ export class OrderGateway {
   @WebSocketServer()
   server: Server;
 
-  @SubscribeMessage('orderReceivedByRestaurant')
+  @SubscribeMessage(Enums.Order.Commands.ORDER_RECEIVED_BY_RESTAURANT)
   create(@MessageBody() payload: any) {
     console.log('order created - ', payload);
 

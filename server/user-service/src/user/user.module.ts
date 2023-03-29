@@ -1,13 +1,11 @@
 import { MiddlewareConsumer, Module, NestModule } from '@nestjs/common';
 import { UserController } from './user.controller';
-import { User } from './user.entity';
 import { UserService } from './user.service';
-import { MikroOrmModule } from '@mikro-orm/nestjs';
 import { JwtModule } from '@nestjs/jwt';
-import { LocalStrategy } from './local.strategy';
+import { LocalStrategy } from './strategies/local.strategy';
 import { ConfigModule, ConfigService } from '@nestjs/config';
-import { UserRepository } from './user.repository';
-
+import { SequelizeModule } from '@nestjs/sequelize';
+import { User } from './entities/user.entity';
 
 @Module({
   controllers: [
@@ -15,7 +13,7 @@ import { UserRepository } from './user.repository';
   ],
   exports: [UserService],
   imports: [
-    MikroOrmModule.forFeature([User]),
+    SequelizeModule.forFeature([User]),
     JwtModule.registerAsync({
       imports: [ConfigModule],
       useFactory: async (configService: ConfigService) => ({
@@ -24,10 +22,9 @@ import { UserRepository } from './user.repository';
         signOptions: { expiresIn: '900s' }
       }),
       inject: [ConfigService],
-    }),
-    UserRepository
+    })
   ],
-  providers: [UserService, LocalStrategy, UserRepository],
+  providers: [UserService, LocalStrategy],
 })
 
 export class UserModule implements NestModule {

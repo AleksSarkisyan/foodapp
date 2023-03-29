@@ -34,7 +34,7 @@ $ npm install
 
 ## DB setup
 <!-- 
-1.Create new auth_service mysql database 
+1.Create new user_service mysql database 
 2. Modify creds in create-schema.ts
 3. Install ts-node sudo npm install -g ts-node
 4. Run migrations ts-node create-schema.ts 

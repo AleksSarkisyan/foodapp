@@ -1,11 +1,10 @@
 import { Controller, UsePipes, UseFilters, Logger } from '@nestjs/common';
 import { MessagePattern, Payload } from '@nestjs/microservices';
 import { UserService } from './user.service';
-import { ValidationPipe } from '../shared/pipes/validation.pipe';
-import { ExceptionFilter } from 'src/filters/ExceptionFilter';
-import { LocalStrategy } from './local.strategy';
-import { CreateUserDto } from './dto/create-user.dto';
-import { LoginUser } from './dto/login-user';
+import { LocalStrategy } from './strategies/local.strategy';
+import { Enums, Filters, Types } from '@asarkisyan/nestjs-foodapp-shared';
+import { JoiValidationPipe } from 'src/shared/pipes/joi-validation-pipe';
+
 
 @Controller()
 export class UserController {
@@ -13,18 +12,17 @@ export class UserController {
     private readonly userService: UserService,
     private readonly localStrategy: LocalStrategy) { }
 
-  @UsePipes(new ValidationPipe())
-  @UseFilters(new ExceptionFilter())
-  @MessagePattern({ cmd: 'createUser' })
-
-  /** Creates user and access token */
-  async create(@Payload() createUserDto: CreateUserDto) {
+  @UseFilters(new Filters.ExceptionFilter())
+  @MessagePattern({ cmd: Enums.User.Commands.CREATE_USER })
+  @UsePipes(new JoiValidationPipe(Types.User.createUserSchema))
+  /** Creates user and issues access token */
+  async create(@Payload() createUserDto: Types.User.CreateUserDto) {
     let user = await this.userService.create(createUserDto);
     let shouldLogin = await this.localStrategy.validate(user.email, user.password);
     let { email, password, name } = user;
 
     if (shouldLogin) {
-      let tokenData: LoginUser = {
+      let tokenData: Types.User.LoginUser = {
         email,
         password
       }
@@ -46,12 +44,14 @@ export class UserController {
         name,
         email
       },
-      error: 'Could not get token'
+      error: Enums.User.Messages.TOKEN_ERROR
     }
   }
 
-  @MessagePattern({ cmd: 'loginUser' })
-  async login(@Payload() loginUserDto: LoginUser) {
+  @UseFilters(new Filters.ExceptionFilter())
+  @MessagePattern({ cmd: Enums.User.Commands.LOGIN_USER })
+  @UsePipes(new JoiValidationPipe(Types.User.loginUserSchema))
+  async login(@Payload() loginUserDto: Types.User.LoginUser) {
     let user = await this.localStrategy.validate(loginUserDto.email, loginUserDto.password);
 
     if (user) {
@@ -69,30 +69,33 @@ export class UserController {
     }
 
     return {
-      error: 'Coult not log in.'
+      error: Enums.User.Messages.LOGIN_ERROR
     }
   }
 
-  @MessagePattern({ cmd: 'isLoggedIn' })
-  async isLoggedIn(data: { jwt: string }) {
+  @UseFilters(new Filters.ExceptionFilter())
+  @MessagePattern({ cmd: Enums.User.Commands.IS_LOGGED_IN })
+  @UsePipes(new JoiValidationPipe(Types.User.isLoggedInSchema))
+  async isLoggedIn(data: Types.User.IsLoggedIn) {
     try {
       return this.userService.validateToken(data.jwt);
     } catch (e) {
-      console.log('token validation failed', e);
+      console.log(Enums.User.Messages.TOKEN_VALIDATION_ERROR, e);
       Logger.log(e);
       return false;
     }
   }
-  @MessagePattern({ cmd: 'getUserFromToken' })
-  async getUserFromToken(token: string) {
+
+  @UseFilters(new Filters.ExceptionFilter())
+  @MessagePattern({ cmd: Enums.User.Commands.GET_USER_FROM_TOKEN })
+  @UsePipes(new JoiValidationPipe(Types.User.getUserFromTokenSchema))
+  async getUserFromToken(data: Types.User.GetUserFromToken) {
     try {
-      return this.userService.getUserFromToken(token);
+      return this.userService.getUserFromToken(data.token);
     } catch (e) {
-      console.log('token validation failed', e);
+      console.log(Enums.User.Messages.TOKEN_VALIDATION_ERROR, e);
       Logger.log(e);
       return false;
     }
   }
-
-
 }

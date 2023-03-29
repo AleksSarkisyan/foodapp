@@ -1,3 +1,4 @@
+import { Enums } from '@asarkisyan/nestjs-foodapp-shared';
 import { CanActivate, ExecutionContext, Inject, Logger, mixin } from '@nestjs/common';
 import { ClientProxy } from '@nestjs/microservices';
 import { firstValueFrom } from 'rxjs';
@@ -15,7 +16,7 @@ export const UserAuthorizedGuard = (serviceName: string) => {
 
       try {
         const res = this.client.send(
-          { cmd: 'isLoggedIn' },
+          { cmd: Enums.User.Commands.IS_LOGGED_IN },
           { jwt: req.headers['authorization'] })
           .pipe(timeout(1000));
 

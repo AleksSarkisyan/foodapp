@@ -1,4 +1,4 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete } from '@nestjs/common';
+import { Controller, Get } from '@nestjs/common';
 import { RestaurantService } from './restaurant.service';
 
 @Controller('restaurant')
@@ -7,7 +7,11 @@ export class RestaurantController {
 
   @Get('all')
   findAll() {
-    return this.restaurantService.findAll();
+    try {
+      return this.restaurantService.findAll();
+    } catch (error) {
+      return error;
+    }
   }
 
 }

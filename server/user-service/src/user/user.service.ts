@@ -1,45 +1,40 @@
-import { EntityRepository } from '@mikro-orm/mysql';
-import { InjectRepository } from '@mikro-orm/nestjs';
 import { Injectable } from '@nestjs/common';
-import { User } from './user.entity';
-import { validate } from 'class-validator';
 import { RpcException } from '@nestjs/microservices';
 import { JwtService } from '@nestjs/jwt';
-import { CreateUserDto } from './dto/create-user.dto';
-import { LoginUser } from './dto/login-user';
+import { InjectModel } from '@nestjs/sequelize';
+import { User } from './entities/user.entity';
+import { Enums, Types } from '@asarkisyan/nestjs-foodapp-shared';
 
 @Injectable()
 export class UserService {
-
   constructor(
+    @InjectModel(User)
+    private userModel: typeof User,
     private readonly jwtService: JwtService,
-    @InjectRepository(User)
-    private readonly userRepository: EntityRepository<User>,
-  ) {
+  ) { }
+  async create(createUserDto: Types.User.CreateUserDto) {
+    try {
+      const { name, email, password } = createUserDto;
+      const exists = await this.userModel.findOne({ where: { email } });
 
-  }
-  async create(createUserDto: CreateUserDto) {
-    const { name, email, password } = createUserDto;
-    const exists = await this.userRepository.findOne({ email });
+      if (exists && exists.id) {
+        throw new RpcException(Enums.User.Messages.USER_EXIST_ERROR);
+      }
 
-    if (exists && exists.id) {
-      throw new RpcException('User exists');
+      let user = await this.userModel.create({ name, email, password });
+
+      return user;
+    } catch (error) {
+      throw new RpcException(error);
     }
-
-    const user = new User(name, email, password);
-    const errors = await validate(user);
-
-    if (errors.length > 0) {
-      throw new RpcException('Data validation failed');
-    }
-
-    await this.userRepository.persistAndFlush(user);
-
-    return user;
   }
 
-  async login(user: LoginUser) {
+  async login(user: Types.User.LoginUser) {
     const payload = { user, sub: user.email };
+
+    if (!this.jwtService.sign(payload)) {
+      throw new RpcException(Enums.User.Messages.TOKEN_VALIDATION_ERROR);
+    }
 
     return {
       email: user.email,
@@ -51,21 +46,19 @@ export class UserService {
     return this.jwtService.verify(jwt);
   }
 
-  findAll() {
-    return `This action returns all user`;
-  }
-
   async findOne(id: number) {
-    return await this.userRepository.findOne({ id });
+    return await this.userModel.findOne({ where: { id } });
   }
 
   async findByEmailAndPassword(email: string, password: string) {
-    return await this.userRepository.findOne({ email, password });
+    return await this.userModel.findOne({ where: { email, password } });
   }
 
   async findByEmail(email: string) {
-    return await this.userRepository.findOne({
-      email
+    return await this.userModel.findOne({
+      where: {
+        email
+      }
     });
   }
 

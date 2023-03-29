@@ -1,7 +1,9 @@
 import { Strategy } from 'passport-local';
 import { PassportStrategy } from '@nestjs/passport';
-import { Injectable, UnauthorizedException } from '@nestjs/common';
-import { UserService } from './user.service';
+import { Injectable } from '@nestjs/common';
+import { UserService } from '../user.service';
+import { RpcException } from '@nestjs/microservices';
+import { Enums } from '@asarkisyan/nestjs-foodapp-shared';
 
 @Injectable()
 export class LocalStrategy extends PassportStrategy(Strategy) {
@@ -13,7 +15,7 @@ export class LocalStrategy extends PassportStrategy(Strategy) {
     const user = await this.userService.findByEmailAndPassword(email, password);
 
     if (!user) {
-      throw new UnauthorizedException();
+      throw new RpcException(Enums.User.Messages.USER_NOT_FOUND);
     }
 
     if (password === user.password) {
