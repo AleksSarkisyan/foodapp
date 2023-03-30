@@ -1,8 +1,7 @@
+import { Types } from '@asarkisyan/nestjs-foodapp-shared';
 import { Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/sequelize';
-import { Product } from 'src/product/entities/product.entity';
 import { UserService } from 'src/user/user.service';
-import { CreateMenuProductDto } from './dto/create-menu-product.dto';
 import { MenuProduct } from './entities/menu-product.entity';
 
 @Injectable()
@@ -12,7 +11,7 @@ export class MenuProductService {
     private menuProductModel: typeof MenuProduct,
     private userService: UserService
   ) { }
-  async create(createMenuProductDto: CreateMenuProductDto) {
+  async create(createMenuProductDto: Types.MenuProduct.CreateMenuProductDto) {
     let { id: userId } = await this.userService.getUserFromToken(createMenuProductDto.token);
     createMenuProductDto.userId = userId;
 

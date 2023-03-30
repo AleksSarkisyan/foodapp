@@ -1,6 +1,6 @@
+import { Types } from '@asarkisyan/nestjs-foodapp-shared';
 import { Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/sequelize';
-import { CreateOrderProductDto } from './dto/create-order-product.dto';
 import { OrderProduct } from './entities/order-product.entity';
 
 @Injectable()
@@ -9,7 +9,7 @@ export class OrderProductService {
     @InjectModel(OrderProduct)
     private orderProductModel: typeof OrderProduct,
   ) { }
-  async create(createOrderProductDto: CreateOrderProductDto) {
+  async create(createOrderProductDto: Types.OrderProduct.CreateOrderProductDto) {
     return await this.orderProductModel.bulkCreate(createOrderProductDto.products);
   }
 

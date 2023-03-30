@@ -1,3 +1,4 @@
+import { Types } from '@asarkisyan/nestjs-foodapp-shared';
 import { Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/sequelize';
 import { OrderProduct } from 'src/order-product/entities/order-product.entity';
@@ -5,8 +6,8 @@ import { OrderProductService } from 'src/order-product/order-product.service';
 import { Product } from 'src/product/entities/product.entity';
 import { ProductService } from 'src/product/product.service';
 import { RestaurantService } from 'src/restaurant/restaurant.service';
-import { CreateOrderDto } from './dto/create-order.dto';
 import { Order } from './entities/order.entity';
+
 
 @Injectable()
 export class OrderService {
@@ -18,7 +19,7 @@ export class OrderService {
     private orderProductService: OrderProductService
   ) { }
 
-  async create(createOrderDto: CreateOrderDto) {
+  async create(createOrderDto: Types.Order.CreateOrderDto) {
     const { restaurantId, userId } = createOrderDto;
     const restaurantUserId = await this.restaurantService.findOne(restaurantId);
     const productIds = createOrderDto.products.map((obj) => obj.productId);

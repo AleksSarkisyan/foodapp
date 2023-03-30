@@ -1,14 +1,15 @@
+import { Types, Enums } from '@asarkisyan/nestjs-foodapp-shared';
 import { Inject, Injectable } from '@nestjs/common';
 import { ClientProxy } from '@nestjs/microservices';
 import { firstValueFrom } from 'rxjs';
-import { CreateMenuProductDto } from './dto/create-menu-product.dto';
+
 
 @Injectable()
 export class MenuProductService {
-  constructor(@Inject('RESTAURANT_SERVICE') public client: ClientProxy) { }
+  constructor(@Inject(Enums.Restaurant.Generic.SERVICE_NAME) public client: ClientProxy) { }
 
-  async create(createMenuProductDto: CreateMenuProductDto) {
-    let message = this.client.send({ cmd: 'createMenuProduct' }, createMenuProductDto);
+  async create(createMenuProductDto: Types.MenuProduct.CreateMenuProductDto) {
+    let message = this.client.send({ cmd: Enums.MenuProduct.Commands.CREATE_MENU_PRODUCT }, createMenuProductDto);
 
     return await firstValueFrom(message);
   }

@@ -1,19 +1,14 @@
 import { Module } from '@nestjs/common';
 import { MenuService } from './menu.service';
 import { MenuController } from './menu.controller';
-import { ClientsModule, Transport } from '@nestjs/microservices';
+import { ClientsModule } from '@nestjs/microservices';
+import { RestaurantClientModuleOptions } from 'shared/client-modules';
+
 
 @Module({
   imports: [
     ClientsModule.register([
-      {
-        name: 'RESTAURANT_SERVICE',
-        transport: Transport.REDIS,
-        options: {
-          host: 'localhost',
-          port: 6379,
-        }
-      }
+      RestaurantClientModuleOptions
     ])
   ],
   controllers: [MenuController],

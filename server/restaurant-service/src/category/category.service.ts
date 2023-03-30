@@ -1,7 +1,8 @@
+import { Types, Enums } from '@asarkisyan/nestjs-foodapp-shared';
 import { Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/sequelize';
-import { CreateCategoryDto } from './dto/create-category.dto';
 import { Category } from './entities/category.entity';
+
 
 @Injectable()
 export class CategoryService {
@@ -10,7 +11,7 @@ export class CategoryService {
     private categoryModel: typeof Category,
   ) { }
 
-  create(createCategoryDto: CreateCategoryDto) {
+  create(createCategoryDto: Types.Category.CreateCategoryDto) {
     return this.categoryModel.create({ ...createCategoryDto });
   }
 

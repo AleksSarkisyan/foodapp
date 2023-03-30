@@ -9,7 +9,7 @@ export class MenuService {
   constructor(@Inject(Enums.Restaurant.Generic.SERVICE_NAME) public client: ClientProxy) { }
 
   async findOne(id: string) {
-    let message = this.client.send({ cmd: Enums.Menu.Commands.FIND_RESTAURANT_MENU }, { menuId: id });
+    let message = this.client.send({ cmd: Enums.Menu.Commands.FIND_RESTAURANT_MENU }, { restaurantId: id });
 
     return await firstValueFrom(message);
   }

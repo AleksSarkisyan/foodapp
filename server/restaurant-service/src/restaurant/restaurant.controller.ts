@@ -1,27 +1,28 @@
 import { Controller, UsePipes } from '@nestjs/common';
 import { MessagePattern, Payload } from '@nestjs/microservices';
 import { RestaurantService } from './restaurant.service';
-import { CreateRestaurantDto, createRestaurantSchema } from './dto/create-restaurant.dto';
 import { JoiValidationPipe } from 'src/shared/pipes/joi-validation-pipe';
-import { UpdateRestaurantDto, updateRestaurantSchema } from './dto/update-restaurant.dto';
+import { Types, Enums } from '@asarkisyan/nestjs-foodapp-shared';
+
+const { CREATE_RESTAURANT, UPDATE_RESTAURANT, FIND_ALL_RESTAURANTS } = Enums.Restaurant.Commands
 
 @Controller()
 export class RestaurantController {
   constructor(private readonly restaurantService: RestaurantService) { }
 
-  @MessagePattern({ cmd: 'createRestaurant' })
-  @UsePipes(new JoiValidationPipe(createRestaurantSchema))
-  create(@Payload() createRestaurantDto: CreateRestaurantDto) {
+  @MessagePattern({ cmd: CREATE_RESTAURANT })
+  @UsePipes(new JoiValidationPipe(Types.Restaurant.createRestaurantSchema))
+  create(@Payload() createRestaurantDto: Types.Restaurant.CreateRestaurantDto) {
     return this.restaurantService.create(createRestaurantDto);
   }
 
-  @MessagePattern({ cmd: 'updateRestaurant' })
-  @UsePipes(new JoiValidationPipe(updateRestaurantSchema))
-  update(@Payload() updateRestaurantDto: UpdateRestaurantDto) {
+  @MessagePattern({ cmd: UPDATE_RESTAURANT })
+  @UsePipes(new JoiValidationPipe(Types.Restaurant.updateRestaurantSchema))
+  update(@Payload() updateRestaurantDto: Types.Restaurant.UpdateRestaurantDto) {
     return this.restaurantService.update(updateRestaurantDto);
   }
 
-  @MessagePattern({ cmd: 'findAllRestaurants' })
+  @MessagePattern({ cmd: FIND_ALL_RESTAURANTS })
   findAll() {
     return this.restaurantService.findAll();
   }

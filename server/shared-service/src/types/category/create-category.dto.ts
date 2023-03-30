@@ -11,3 +11,4 @@ export const createCategorySchema = Joi.object({
     description: Joi.string().optional(),
     slug: Joi.string().optional()
 })
+
