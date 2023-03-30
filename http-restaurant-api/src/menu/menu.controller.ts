@@ -1,15 +1,16 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete, UseGuards } from '@nestjs/common';
+import { Controller, Post, Body, UseGuards } from '@nestjs/common';
 import { MenuService } from './menu.service';
-import { CreateMenuDto } from './dto/create-menu.dto';
 import { UserAuthorizedGuard } from 'src/guards/UserAuthorizedGuard';
+import { Types, Enums } from '@asarkisyan/nestjs-foodapp-shared';
+
 
 @Controller('menu')
 export class MenuController {
   constructor(private readonly menuService: MenuService) { }
 
-  @UseGuards(UserAuthorizedGuard('RESTAURANT_SERVICE'))
+  @UseGuards(UserAuthorizedGuard(Enums.Restaurant.Generic.SERVICE_NAME))
   @Post('/create')
-  async create(@Body() createMenuDto: CreateMenuDto) {
+  async create(@Body() createMenuDto: Types.Menu.CreateMenuDto) {
     return await this.menuService.create(createMenuDto);
   }
 }

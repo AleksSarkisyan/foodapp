@@ -1,9 +1,9 @@
 import * as Joi from 'joi';
 
 export class FindMenuDto {
-    menuId: number;
+    restaurantId: number;
 }
 
 export const findMenuMenuSchema = Joi.object({
-    menuId: Joi.number().required()
+    restaurantId: Joi.number().required()
 });

@@ -1,9 +1,8 @@
-import { CreateRestaurantUserDto } from './dto/create-restaurant-user.dto';
 import { Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/sequelize';
 import { User } from './entities/user.entity';
-import { LoginUser } from './dto/login-user';
 import { JwtService } from '@nestjs/jwt';
+import { Types } from '@asarkisyan/nestjs-foodapp-shared';
 
 @Injectable()
 export class UserService {
@@ -13,7 +12,7 @@ export class UserService {
     private userModel: typeof User,
   ) { }
 
-  create(createRestaurantUserDto: CreateRestaurantUserDto) {
+  create(createRestaurantUserDto: Types.RestaurantUser.CreateRestaurantUserDto) {
     return this.userModel.create({ ...createRestaurantUserDto });
   }
 
@@ -42,7 +41,7 @@ export class UserService {
     });
   }
 
-  async login(user: LoginUser) {
+  async login(user: Types.User.LoginUser) {
     const payload = { user, sub: user.email };
 
     return {

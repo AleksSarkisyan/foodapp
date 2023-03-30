@@ -1,10 +1,9 @@
 import { Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/sequelize';
-import { CreateRestaurantDto } from './dto/create-restaurant.dto';
-import { UpdateRestaurantDto } from './dto/update-restaurant.dto';
 import { Restaurant } from './entities/restaurant.entity';
 import { UserService } from 'src/user/user.service';
 import { Op } from 'sequelize';
+import { Types } from '@asarkisyan/nestjs-foodapp-shared';
 
 @Injectable()
 export class RestaurantService {
@@ -13,14 +12,14 @@ export class RestaurantService {
     private restaurantModel: typeof Restaurant,
     private userService: UserService
   ) { }
-  async create(createRestaurantDto: CreateRestaurantDto) {
+  async create(createRestaurantDto: Types.Restaurant.CreateRestaurantDto) {
     let { id: userId } = await this.userService.getUserFromToken(createRestaurantDto.token);
     createRestaurantDto.userId = userId;
 
     return this.restaurantModel.create({ ...createRestaurantDto });
   }
 
-  async update(updateRestaurantDto: UpdateRestaurantDto) {
+  async update(updateRestaurantDto: Types.Restaurant.UpdateRestaurantDto) {
     let { id: userId } = await this.userService.getUserFromToken(updateRestaurantDto.token);
 
     return await this.restaurantModel.update(

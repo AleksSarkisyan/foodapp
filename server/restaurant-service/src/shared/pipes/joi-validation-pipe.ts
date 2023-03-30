@@ -1,5 +1,6 @@
-import { PipeTransform, Injectable, ArgumentMetadata, BadRequestException } from '@nestjs/common';
+import { PipeTransform, Injectable, ArgumentMetadata } from '@nestjs/common';
 import { ObjectSchema } from 'joi';
+import { RpcException } from '@nestjs/microservices';
 
 @Injectable()
 export class JoiValidationPipe implements PipeTransform {
@@ -13,7 +14,7 @@ export class JoiValidationPipe implements PipeTransform {
 
         if (error) {
             console.log('Error -', error)
-            throw new BadRequestException('Validation failed');
+            throw new RpcException(error);
         }
         return value;
     }

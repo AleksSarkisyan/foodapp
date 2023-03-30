@@ -1,5 +1,6 @@
-import { CreateOrderDto } from './create-order.dto';
+import { CreateOrderDto, createOrderSchema } from './create-order.dto';
 
 export {
-    CreateOrderDto
+    CreateOrderDto,
+    createOrderSchema
 }

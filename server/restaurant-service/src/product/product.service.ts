@@ -1,12 +1,9 @@
 import { Injectable } from '@nestjs/common';
-import { JwtService } from '@nestjs/jwt';
 import { InjectModel } from '@nestjs/sequelize';
-import { User } from 'src/user/entities/user.entity';
 import { UserService } from 'src/user/user.service';
-import { CreateProductDto, FindRestaurantProductsDto } from './dto/create-product.dto';
 import { Product } from './entities/product.entity';
 import { Op } from 'sequelize';
-
+import { Types } from '@asarkisyan/nestjs-foodapp-shared';
 
 @Injectable()
 export class ProductService {
@@ -15,7 +12,7 @@ export class ProductService {
     private productModel: typeof Product,
     private userService: UserService
   ) { }
-  async create(createProductDto: CreateProductDto) {
+  async create(createProductDto: Types.Product.CreateProductDto) {
     let { id } = await this.userService.getUserFromToken(createProductDto.token);
 
     createProductDto.userId = id;
@@ -23,7 +20,7 @@ export class ProductService {
     return this.productModel.create({ ...createProductDto });
   }
 
-  async findRestaurantProducts(findRestaurantProductsDto: FindRestaurantProductsDto) {
+  async findRestaurantProducts(findRestaurantProductsDto: Types.Product.FindRestaurantProductsDto) {
     let { restaurantUserId, productIds } = findRestaurantProductsDto;
 
     return this.productModel.findAll({

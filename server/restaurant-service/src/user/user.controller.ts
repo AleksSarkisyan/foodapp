@@ -1,25 +1,25 @@
 import { Controller, Logger, UsePipes } from '@nestjs/common';
 import { MessagePattern, Payload } from '@nestjs/microservices';
 import { UserService } from './user.service';
-import { CreateRestaurantUserDto, createRestaurantUserSchema } from './dto/create-restaurant-user.dto';
 import { JoiValidationPipe } from 'src/shared/pipes/joi-validation-pipe';
 import { LocalStrategy } from './local.strategy';
-import { LoginUser } from './dto/login-user';
+import { Types, Enums } from '@asarkisyan/nestjs-foodapp-shared';
 
+const { CREATE_RESTAURANT_USER, LOGIN_RESTAURANT_USER, IS_LOGGED_IN } = Enums.RestaurantUser.Commands
 @Controller()
 export class UserController {
   constructor(private readonly userService: UserService, private readonly localStrategy: LocalStrategy) { }
 
-  @MessagePattern({ cmd: 'createRestaurantUser' })
-  @UsePipes(new JoiValidationPipe(createRestaurantUserSchema))
-  async create(@Payload() createRestaurantUserDto: CreateRestaurantUserDto) {
+  @MessagePattern({ cmd: CREATE_RESTAURANT_USER })
+  @UsePipes(new JoiValidationPipe(Types.RestaurantUser.createRestaurantUserSchema))
+  async create(@Payload() createRestaurantUserDto: Types.RestaurantUser.CreateRestaurantUserDto) {
     let user = await this.userService.create(createRestaurantUserDto);
     let shouldLogin = await this.localStrategy.validate(user.email, user.password);
 
     let { email, password, firstName, lastName } = user;
 
     if (shouldLogin) {
-      let tokenData: LoginUser = {
+      let tokenData: Types.User.LoginUser = {
         email,
         password
       }
@@ -47,8 +47,8 @@ export class UserController {
     }
   }
 
-  @MessagePattern({ cmd: 'loginRestaurantUser' })
-  async login(@Payload() loginUserDto: LoginUser) {
+  @MessagePattern({ cmd: LOGIN_RESTAURANT_USER })
+  async login(@Payload() loginUserDto: Types.User.LoginUser) {
     let user = await this.localStrategy.validate(loginUserDto.email, loginUserDto.password);
 
     if (user) {
@@ -70,7 +70,7 @@ export class UserController {
     }
   }
 
-  @MessagePattern({ cmd: 'isLoggedIn' })
+  @MessagePattern({ cmd: IS_LOGGED_IN })
   async isLoggedIn(data: { jwt: string }) {
     try {
       return this.userService.validateToken(data.jwt);
