@@ -7,6 +7,7 @@ import * as  MenuProduct from './menu-product';
 import * as  OrderProduct from './order-product.enum';
 import * as  Product from './product.enum';
 import * as  RestaurantUser from './restaurant-user.enum';
+import * as Payment from './payment.enum';
 
 export {
     User,
@@ -17,5 +18,6 @@ export {
     MenuProduct,
     OrderProduct,
     Product,
-    RestaurantUser
+    RestaurantUser,
+    Payment
 }
