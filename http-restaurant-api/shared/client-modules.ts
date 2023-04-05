@@ -17,5 +17,14 @@ export const UserCliemtModuleOptions = {
         host: 'localhost',
         port: 6379
     }
+}
+
+export const PaymentCliemtModuleOptions = {
+    name: Enums.Payment.Generic.SERVICE_NAME,
+    transport: Transport.REDIS as Transport.REDIS,
+    options: {
+        host: 'localhost',
+        port: 6379
+    }
 
 }

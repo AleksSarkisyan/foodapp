@@ -12,4 +12,9 @@ export class OrderController {
     return this.orderService.create(createOrderDto);
   }
 
+  @MessagePattern({ cmd: 'getProductOrderDetails' })
+  getProductOrderDetails(@Payload() createOrderDto: Types.Order.CreateOrderDto) {
+    return this.orderService.getProductOrderDetails(createOrderDto);
+  }
+
 }

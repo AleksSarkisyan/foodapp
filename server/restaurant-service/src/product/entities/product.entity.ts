@@ -15,6 +15,10 @@ export class Product extends Model {
 
     @Unique
     @Column
+    stripeId: string;
+
+    @Unique
+    @Column
     name: string;
 
     @Column
@@ -23,6 +27,10 @@ export class Product extends Model {
     @Unique
     @Column
     price: number;
+
+    @Unique
+    @Column
+    stripePrice: number;
 
     @Column
     promoPrice: number;

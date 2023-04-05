@@ -17,7 +17,7 @@ async function bootstrap() {
   });
 
   await app.listen();
-  logger.log('RESTAURANT SERVICE LISTENING...');
+  logger.log('PAYMENT SERVICE LISTENING...');
 }
 
 bootstrap();

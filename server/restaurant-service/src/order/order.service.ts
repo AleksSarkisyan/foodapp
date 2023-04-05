@@ -20,14 +20,13 @@ export class OrderService {
   ) { }
 
   async create(createOrderDto: Types.Order.CreateOrderDto) {
-    const { restaurantId, userId } = createOrderDto;
-    const restaurantUserId = await this.restaurantService.findOne(restaurantId);
-    const productIds = createOrderDto.products.map((obj) => obj.productId);
-    const totalQuantity = this.calculateTotal(createOrderDto.products as OrderProduct[], 'quantity');
-    const availableProducts = await this.productService.findRestaurantProducts({
-      restaurantUserId: restaurantUserId.userId,
-      productIds
-    });
+
+    const {
+      restaurantId,
+      userId,
+      totalQuantity,
+      availableProducts
+    } = await this.getProductOrderDetails(createOrderDto);
 
     const orderData = {
       userId,
@@ -89,6 +88,26 @@ export class OrderService {
     return array.reduce((accumulator, object) => {
       return accumulator + object[key];
     }, 0);
+  }
+
+  async getProductOrderDetails(createOrderDto: Types.Order.CreateOrderDto) {
+    const { restaurantId, userId } = createOrderDto;
+    const restaurantUserId = await this.restaurantService.findOne(restaurantId);
+    const productIds = createOrderDto.products.map((obj) => obj.productId);
+    const totalQuantity = this.calculateTotal(createOrderDto.products as OrderProduct[], 'quantity');
+    const availableProducts = await this.productService.findRestaurantProducts({
+      restaurantUserId: restaurantUserId.userId,
+      productIds
+    });
+
+    return {
+      restaurantId,
+      restaurantUserId,
+      userId,
+      productIds,
+      totalQuantity,
+      availableProducts
+    }
   }
 
 }

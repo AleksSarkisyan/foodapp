@@ -3,13 +3,14 @@ import { OrderService } from './order.service';
 import { OrderController } from './order.controller';
 import { ClientsModule } from '@nestjs/microservices';
 import { OrderGateway } from './order.gateway';
-import { RestaurantClientModuleOptions, UserCliemtModuleOptions } from 'src/shared/client-modules';
+import { RestaurantClientModuleOptions, UserCliemtModuleOptions, PaymentCliemtModuleOptions } from 'src/shared/client-modules';
 
 @Module({
   imports: [
     ClientsModule.register([
       RestaurantClientModuleOptions,
-      UserCliemtModuleOptions
+      UserCliemtModuleOptions,
+      PaymentCliemtModuleOptions
     ])
   ],
   controllers: [OrderController],
