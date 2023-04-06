@@ -9,8 +9,8 @@ export class StripeController {
   constructor(private readonly stripeService: StripeService) { }
 
   @MessagePattern({ cmd: 'createStripePayment' })
-  async create(@Payload() { stripePriceId, quantity }) {
-    return await this.stripeService.createStripeSession(stripePriceId, quantity);
+  async create(@Payload() productData) {
+    return await this.stripeService.createStripeSession(productData);
   }
 
   @MessagePattern({ cmd: 'createStripeProductAndPrice' })

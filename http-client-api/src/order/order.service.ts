@@ -40,9 +40,9 @@ export class OrderService {
     3.2 If not same create new price [ OK ]
     3.3 Archive old stripe price [ OK ]
     3.4 Update DB with new price [ OK ]
-    4 Create order
-    4.1 Prepare array from DB with stripeProductIds and quantity
-    4.2 Create session and return success/error url
+    4 Create order [ OK ]
+    4.1 Prepare array from DB with stripeProductIds and quantity [ OK ]
+    4.2 Create session and return success/error url [ OK ]
   */
   async create(createOrderDto: Types.Order.CreateOrderDto) {
 
@@ -117,20 +117,32 @@ export class OrderService {
     /** 4 */
     let message = this.client.send({ cmd: Enums.Order.Commands.CREATE_ORDER }, createOrderDto);
     let orderResult = await firstValueFrom(message)
+    console.log('orderResult is', orderResult)
 
+    let stripeSessionData = orderResult.stripeCheckoutSessionData;
+    console.log('stripeSessionData is', stripeSessionData)
     /** 4.1 */
-
+    if (!stripeSessionData.length) {
+      return {
+        error: true,
+        message: 'Could not get stripe products'
+      }
+    }
 
     /** 4.2 */
-    // let result = this.paymentClient.send({ cmd: 'createStripePayment' }, {});
+    let stripeSession = this.paymentClient.send({ cmd: 'createStripePayment' }, stripeSessionData);
+    let stripeSessionResult = await firstValueFrom(stripeSession);
 
-    this.orderGateway.server.emit(Enums.Restaurant.Websocket.ORDER_CREATED, JSON.stringify(orderResult))
+    console.log('stripeSessionResult -', stripeSessionResult)
+
+    //this.orderGateway.server.emit(Enums.Restaurant.Websocket.ORDER_CREATED, JSON.stringify(orderResult))
 
     return {
       success: true,
       productOrderDetailsResult,
       productsFound,
-      orderResult
+      orderResult,
+      stripeSessionResult
     }
   }
 

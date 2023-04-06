@@ -39,6 +39,7 @@ export class OrderService {
     const order = await this.orderModel.create({ ...orderData });
 
     let orderProductsData = [];
+    let stripeCheckoutSessionData = [];
     for (let [key, product] of Object.entries(availableProducts)) {
       createOrderDto.products.find((orderDto) => {
         if (orderDto.productId == product.id) {
@@ -51,7 +52,12 @@ export class OrderService {
             productsPrice: product.price * orderDto.quantity,
             quantity: orderDto.quantity,
             orderId: order.id
-          })
+          });
+
+          stripeCheckoutSessionData.push({
+            price: product.stripePrice,
+            quantity: orderDto.quantity,
+          });
         }
       })
     }
@@ -79,7 +85,8 @@ export class OrderService {
 
       return {
         productData: orderProductsData,
-        additional
+        additional,
+        stripeCheckoutSessionData
       };
     }
   }

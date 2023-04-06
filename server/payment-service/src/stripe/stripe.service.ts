@@ -14,19 +14,13 @@ export class StripeService {
       apiVersion: '2022-11-15',
     });
   }
-  async createStripeSession(stripePriceId: string, quantity: number) {
+  async createStripeSession(productData) {
 
 
-    console.log('stripePriceId is', stripePriceId)
+    console.log('stripe productData is', productData)
 
     let session = await this.stripe.checkout.sessions.create({
-      line_items: [
-        {
-          // Provide the exact Price ID (for example, pr_1234) of the product you want to sell
-          price: `${stripePriceId}`,
-          quantity: 1,
-        },
-      ],
+      line_items: productData,
       mode: 'payment',
       success_url: `http://localhost/success.html`,
       cancel_url: `http://localhost/cancel.html`,
@@ -34,9 +28,7 @@ export class StripeService {
 
     console.log('session is', session)
 
-    return {
-      session
-    };
+    return session;
   }
 
   async createStripeProductAndPrice(product: Types.Product.ProductDto) {
@@ -97,7 +89,7 @@ export class StripeService {
   }
 
   async findStripePrice(id: string) {
-    console.log('stripePriceId is', id)
+    console.log('stripePriceId is -', id)
 
     if (!id) {
       return this.setError('Missing stripePriceId')
