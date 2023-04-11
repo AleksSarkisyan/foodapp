@@ -22,8 +22,8 @@ export class StripeService {
     let session = await this.stripe.checkout.sessions.create({
       line_items: productData,
       mode: 'payment',
-      success_url: `http://localhost/success.html`,
-      cancel_url: `http://localhost/cancel.html`,
+      success_url: `http://localhost:3000/success`,
+      cancel_url: `http://localhost:3000/cancel`,
     });
 
     console.log('session is', session)

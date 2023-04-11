@@ -5,6 +5,8 @@ declare const module: any;
 async function bootstrap() {
 
   const app = await NestFactory.create(AppModule);
+  //app.enableCors();
+  app.setGlobalPrefix('api/v1');
   await app.listen(3001);
   console.log('http-client-api listening on port 3001')
   if (module.hot) {
