@@ -7,6 +7,7 @@ import * as OrderProduct from './order-product/index';
 import * as Product from './product/index';
 import * as Restaurant from './restaurant/index';
 import * as RestaurantUser from './restaurant-user/index';
+import * as Stripe from './stripe/index';
 
 export {
     User,
@@ -17,5 +18,6 @@ export {
     OrderProduct,
     Product,
     Restaurant,
-    RestaurantUser
+    RestaurantUser,
+    Stripe
 }

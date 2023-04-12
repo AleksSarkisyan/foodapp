@@ -12,7 +12,7 @@ export class OrderController {
     return this.orderService.create(createOrderDto);
   }
 
-  @MessagePattern({ cmd: 'getProductOrderDetails' })
+  @MessagePattern({ cmd: Enums.Product.Commands.GET_ORDER_PRODUCT_DETAIL })
   getProductOrderDetails(@Payload() createOrderDto: Types.Order.CreateOrderDto) {
     return this.orderService.getProductOrderDetails(createOrderDto);
   }

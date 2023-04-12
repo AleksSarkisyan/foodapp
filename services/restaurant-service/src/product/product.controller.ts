@@ -19,23 +19,20 @@ export class ProductController {
     }
   }
 
-  @MessagePattern({ cmd: 'updateProducts' })
-  // @UsePipes(new JoiValidationPipe(Types.Product.createProductSchema))
+  @MessagePattern({ cmd: Enums.Product.Commands.UPDATE_PRODUCTS })
+  // @UsePipes(new JoiValidationPipe(Types.Product.createProductSchema)) // to do joi validation
   updateProducts(@Payload() productsData: Types.OrderProduct.AvailableProducts[]) {
-    console.log('productsData is', productsData)
-    console.log('restaurantId is', productsData['restaurantId'])
-
-    return this.productService.updateProducts(productsData['products'], productsData['restaurantId'], productsData['productIds'], productsData['restaurantUserId']);
+    return this.productService.updateProducts(productsData['products'], productsData['restaurantId']);
   }
 
-  @MessagePattern({ cmd: 'updateProduct' })
-  //@UsePipes(new JoiValidationPipe(Types.Product.createProductSchema))
+  @MessagePattern({ cmd: Enums.Product.Commands.UPDATE_PRODUCT })
+  //@UsePipes(new JoiValidationPipe(Types.Product.createProductSchema)) // to do joi validation
   update(@Payload() createProductDto: Partial<Types.Product.CreateProductDto>) {
     return this.productService.update(createProductDto);
   }
 
-  @MessagePattern({ cmd: 'updateProductCheckout' })
-  //@UsePipes(new JoiValidationPipe(Types.Product.createProductSchema))
+  @MessagePattern({ cmd: Enums.Product.Commands.UPDATE_PRODUCT_CHECKOUT })
+  //@UsePipes(new JoiValidationPipe(Types.Product.createProductSchema)) // to do joi validation
   updateProductCheckout(@Payload() { productId, product }) {
     return this.productService.updateProductCheckout(productId, product);
   }

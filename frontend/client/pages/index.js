@@ -63,7 +63,7 @@ export async function getServerSideProps() {
   // Direct call
   let createOrder = await fetch('http://localhost:3001/api/v1/order/create', options)
   const createOrderResult = await createOrder.json();
-  const redirectUrl = createOrderResult.stripeSessionResult.url
+  const redirectUrl = createOrderResult.stripeRedirectUrl
 
   return {
     redirect: {

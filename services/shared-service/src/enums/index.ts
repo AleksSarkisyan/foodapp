@@ -8,6 +8,8 @@ import * as  OrderProduct from './order-product.enum';
 import * as  Product from './product.enum';
 import * as  RestaurantUser from './restaurant-user.enum';
 import * as Payment from './payment.enum';
+import * as Stripe from './stripe.enum';
+import * as Messages from './messages.enum';
 
 export {
     User,
@@ -19,5 +21,7 @@ export {
     OrderProduct,
     Product,
     RestaurantUser,
-    Payment
+    Payment,
+    Stripe,
+    Messages
 }

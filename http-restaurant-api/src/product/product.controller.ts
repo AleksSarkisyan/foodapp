@@ -15,7 +15,6 @@ export class ProductController {
       createProductDto.token = headers['authorization'];
       return this.productService.create(createProductDto);
     } catch (error) {
-      console.log('error is', error)
       Logger.log(error)
       return error;
     }

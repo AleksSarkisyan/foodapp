@@ -1,8 +1,9 @@
 import { Injectable } from '@nestjs/common';
 import Stripe from 'stripe';
 import { ConfigService } from '@nestjs/config';
-import { Types } from '@asarkisyan/nestjs-foodapp-shared';
+import { Types, Enums } from '@asarkisyan/nestjs-foodapp-shared';
 
+const messages = Enums.Messages.Messages;
 @Injectable()
 export class StripeService {
   private stripe: Stripe;
@@ -14,32 +15,19 @@ export class StripeService {
       apiVersion: '2022-11-15',
     });
   }
-  async createStripeSession(productData) {
-
-
-    console.log('stripe productData is', productData)
-
-    let session = await this.stripe.checkout.sessions.create({
+  async createStripeSession(productData: Types.Stripe.StripeCheckoutSession[]) {
+    return await this.stripe.checkout.sessions.create({
       line_items: productData,
       mode: 'payment',
-      success_url: `http://localhost:3000/success`,
-      cancel_url: `http://localhost:3000/cancel`,
+      success_url: `http://localhost:3009/success`, // FE urls
+      cancel_url: `http://localhost:3009/cancel`,
     });
-
-    console.log('session is', session)
-
-    return session;
   }
 
   async createStripeProductAndPrice(product: Types.Product.ProductDto) {
-    console.log('product is--', product)
+    let price = this.formatPrice(product.price);
 
-    let priceNum = (Number(product.price) * 100);
-    console.log('priceNum is', priceNum)
-    let price = priceNum.toFixed(1);
-    console.log('price is', price)
-
-    let result = await this.stripe.products.create({
+    let stripeProduct = await this.stripe.products.create({
       name: product.name,
       description: product.description,
       default_price_data: {
@@ -48,90 +36,84 @@ export class StripeService {
       }
     })
 
-    console.log('stripe product is', result)
+    if (!stripeProduct.id) {
+      return this.errorMessage(messages.CREATE_PRODUCT_PRICE_ERROR)
+    }
 
-    if (!result) {
-      return {
-        error: result
-      }
+    return stripeProduct;
+  }
+
+  async createStripePrice(id: string, productPrice: number) {
+    let formattedPrice = this.formatPrice(productPrice);
+
+    let result = await this.stripe.prices.create({
+      unit_amount_decimal: formattedPrice,
+      currency: 'bgn',
+      product: id,
+    });
+
+    if (!result.id) {
+      return this.errorMessage(messages.CREATE_PRICE_ERROR)
     }
 
     return result;
   }
 
-  async createStripePrice(id: string, productPrice: number) {
-    let priceNum = (Number(productPrice) * 100);
-    console.log('priceNum is', priceNum)
-    let price = priceNum.toFixed(1);
-    console.log('price is', price)
-    return await this.stripe.prices.create({
-      unit_amount_decimal: price,
-      currency: 'bgn',
-      product: id,
-    })
-
-  }
-
   async findStripeProduct(id: string) {
-    console.log('stripeId is', id)
-
     if (!id) {
-      return this.setError('Missing stripeId')
+      return this.errorMessage(messages.STRIPE_ID_ERROR)
     }
 
     let product = await this.stripe.products.retrieve(id);
-    console.log('stripe product is', product)
-    if (!product) {
-      return this.setError('Could not find stripe product')
+
+    if (!product.id) {
+      return this.errorMessage(messages.FIND_STRIPE_PRODUCT_ERROR)
     }
 
     return product;
   }
 
   async findStripePrice(id: string) {
-    console.log('stripePriceId is -', id)
-
     if (!id) {
-      return this.setError('Missing stripePriceId')
+      return this.errorMessage(messages.STRIPE_PRICE_ID_ERROR)
     }
 
     let price = await this.stripe.prices.retrieve(id);
-    console.log('stripe price is', price)
-    if (!price) {
-      return this.setError('Could not find stripe price')
+
+    if (!price.id) {
+      return this.errorMessage(messages.STRIPE_PRICE_ERROR)
     }
 
     return price;
   }
 
   async archiveStripePrice(id: string) {
-    console.log('stripePriceId is', id)
-
     if (!id) {
-      return this.setError('Missing stripePriceId')
+      return this.errorMessage(messages.STRIPE_PRICE_ID_ERROR)
     }
 
     let price = await this.stripe.prices.update(
       id,
       { active: false }
     );
-    console.log('stripe price is', price)
-    if (!price) {
-      return this.setError('Could not archive stripe price')
+
+    if (!price.id) {
+      return this.errorMessage(messages.STRIPE_ARCHIVE_ERROR)
     }
 
     return price;
   }
 
-  setError(message) {
+  errorMessage(message: string) {
     return {
       error: true,
       message
     }
   }
 
-
-  remove(id: number) {
-    return `This action removes a #${id} stripe`;
+  formatPrice(productPrice: number) {
+    let priceNum = (Number(productPrice) * 100);
+    return priceNum.toFixed(1);
   }
+
 }

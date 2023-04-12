@@ -1,5 +1,5 @@
-import { Types } from '@asarkisyan/nestjs-foodapp-shared';
-import { Injectable } from '@nestjs/common';
+import { Types, Enums } from '@asarkisyan/nestjs-foodapp-shared';
+import { Injectable, Logger } from '@nestjs/common';
 import { InjectModel } from '@nestjs/sequelize';
 import { OrderProduct } from 'src/order-product/entities/order-product.entity';
 import { OrderProductService } from 'src/order-product/order-product.service';
@@ -8,6 +8,7 @@ import { ProductService } from 'src/product/product.service';
 import { RestaurantService } from 'src/restaurant/restaurant.service';
 import { Order } from './entities/order.entity';
 
+const messages = Enums.Messages.Messages;
 
 @Injectable()
 export class OrderService {
@@ -38,8 +39,12 @@ export class OrderService {
 
     const order = await this.orderModel.create({ ...orderData });
 
-    let orderProductsData = [];
-    let stripeCheckoutSessionData = [];
+    if (!order.id) {
+      return this.errorMessage(messages.CREATE_ORDER_ERROR);
+    }
+
+    let orderProductsData: Types.OrderProduct.OrderProductsData[] = [];
+    let stripeCheckoutSessionData: Types.Stripe.StripeCheckoutSession[] = [];
     for (let [key, product] of Object.entries(availableProducts)) {
       createOrderDto.products.find((orderDto) => {
         if (orderDto.productId == product.id) {
@@ -55,7 +60,7 @@ export class OrderService {
           });
 
           stripeCheckoutSessionData.push({
-            price: product.stripePrice,
+            price: String(product.stripePrice),
             quantity: orderDto.quantity,
           });
         }
@@ -89,6 +94,8 @@ export class OrderService {
         stripeCheckoutSessionData
       };
     }
+
+    return this.errorMessage(messages.CREATE_ORDER_DETAILS_ERROR);
   }
 
   calculateTotal(array: readonly (Product | OrderProduct)[], key: string) {
@@ -114,6 +121,14 @@ export class OrderService {
       productIds,
       totalQuantity,
       availableProducts
+    }
+  }
+
+  errorMessage(message: string) {
+    Logger.log(message);
+    return {
+      error: true,
+      message
     }
   }
 

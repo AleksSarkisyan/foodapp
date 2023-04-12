@@ -6,6 +6,7 @@ export type AvailableProducts = {
     name: string;
     weight: string;
     description: string;
+    userId?: number;
 }
 
 export type OrderProductDetails = {
