@@ -3,6 +3,7 @@ import { ClientProxy } from '@nestjs/microservices';
 import { firstValueFrom } from 'rxjs';
 import { Enums, Types } from '@asarkisyan/nestjs-foodapp-shared';
 
+const messages = Enums.Messages.Messages;
 
 @Injectable()
 export class ProductService {
@@ -15,31 +16,28 @@ export class ProductService {
       let product = await this.createProduct(createProductDto);
 
       if (!product || product['error']) {
-        return this.errorMessage('creating product failed');
+        return this.errorMessage(messages.CREATE_PRODUCT_ERROR);
       }
 
       let { stripeProduct, stripePrice } = await this.createStripeProductAndPrice(product);
-      console.log('stripeProduct is', stripeProduct)
 
       if (!stripeProduct || !stripeProduct.id) {
-        return this.errorMessage('creating stripe product failed')
+        return this.errorMessage(messages.CREATE_STRIPE_PRODUCT_ERROR)
       }
 
       if (!stripePrice || !stripePrice.id) {
-        return this.errorMessage('creating product price failed')
+        return this.errorMessage(messages.CREATE_PRODUCT_PRICE_ERROR)
       }
 
-      console.log('createProductDto is', createProductDto)
-
-      let updateProduct = await this.updateProduct({
+      let updateProduct: Partial<Types.Product.ProductDto> = await this.updateProduct({
         stripeId: stripeProduct.id,
         stripePrice: stripePrice.id,
         token: createProductDto.token,
-        productId: product.id
+        id: product.id
       });
 
       if (!updateProduct || updateProduct[0] != 1) {
-        return this.errorMessage('updating product failed')
+        return this.errorMessage(messages.UPDATE_PRODUCT_ERROR)
       }
 
       return {
@@ -56,25 +54,19 @@ export class ProductService {
     let product = this.client.send({ cmd: Enums.Product.Commands.CREATE_PRODUCT }, createProductDto);
     let productResult: Types.Product.ProductDto = await firstValueFrom(product);
 
-    console.log('productResult is', productResult)
-
     return productResult;
   }
 
   async createStripeProductAndPrice(product: Types.Product.ProductDto) {
-    let stripeProduct = this.paymentClient.send({ cmd: 'createStripeProductAndPrice' }, product);
+    let stripeProduct = this.paymentClient.send({ cmd: Enums.Stripe.Commands.CREATE_STRIPE_PRODUCT_AND_PRICE }, product);
     let stripeProductResult = await firstValueFrom(stripeProduct);
-
-    console.log('stripeProductResult is', stripeProductResult)
 
     return stripeProductResult;
   }
 
-  async updateProduct(stripeProductData) {
-    let updateProduct = this.client.send({ cmd: 'updateProduct' }, stripeProductData);
+  async updateProduct(stripeProductData: Partial<Types.Product.ProductDto>) {
+    let updateProduct = this.client.send({ cmd: Enums.Product.Commands.UPDATE_PRODUCT }, stripeProductData);
     let updateProductResult = await firstValueFrom(updateProduct);
-
-    console.log('updateProductResult is', updateProductResult)
 
     return updateProductResult;
   }

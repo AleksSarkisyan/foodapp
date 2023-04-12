@@ -1,9 +1,9 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, Logger } from '@nestjs/common';
 import { InjectModel } from '@nestjs/sequelize';
 import { UserService } from 'src/user/user.service';
 import { Product } from './entities/product.entity';
 import { Op } from 'sequelize';
-import { Types } from '@asarkisyan/nestjs-foodapp-shared';
+import { Types, Enums } from '@asarkisyan/nestjs-foodapp-shared';
 import { RestaurantService } from 'src/restaurant/restaurant.service';
 import { RpcException } from '@nestjs/microservices';
 
@@ -26,9 +26,7 @@ export class ProductService {
   }
 
   async update(createProductDto: Partial<Types.Product.CreateProductDto>) {
-    console.log('createProductDto is', createProductDto)
     let { id } = await this.userService.getUserFromToken(createProductDto.token);
-    console.log('id is', id)
     createProductDto.userId = id;
 
     return this.productModel.update(
@@ -36,16 +34,12 @@ export class ProductService {
       {
         where: {
           userId: id,
-          id: createProductDto['productId']
+          id: createProductDto['id']
         },
       }).catch(e => { console.log('error is', e); return new RpcException({ error: e, code: 500 }) })
   }
 
-  async updateProductCheckout(productId, product) {
-    console.log('product is', product)
-    console.log('productId is', productId)
-
-
+  async updateProductCheckout(productId: number, product: Types.Product.ProductDto) {
     return this.productModel.update(
       { ...product },
       {
@@ -68,19 +62,24 @@ export class ProductService {
     });
   }
 
-  async updateProducts(productsData: Types.OrderProduct.AvailableProducts[], restaurantId: number, productIds: [], restaurantUserId: number) {
-
+  async updateProducts(productsData: Types.OrderProduct.AvailableProducts[], restaurantId: number) {
     let restaurant = await this.restaurantService.findOne(restaurantId)
-    console.log('restaurantUserId is', restaurant.userId)
-    console.log('productsData is', productsData)
-    //return true;
-    if (restaurant) {
-      return this.productModel.bulkCreate(productsData, {
-        updateOnDuplicate: ["id", 'stripeId', 'stripePrice', 'updated_at'],
-      });
+
+    if (!restaurant.id) {
+      return this.errorMessage(Enums.Messages.Messages.FIND_RESTAURANT_ERROR);
     }
 
-    //return this.productModel.update(productsData);
+    return this.productModel.bulkCreate(productsData, {
+      updateOnDuplicate: ["id", 'stripeId', 'stripePrice', 'updated_at'],
+    });
+  }
+
+  errorMessage(message: string) {
+    Logger.log(message);
+    return {
+      error: true,
+      message
+    }
   }
 
 }

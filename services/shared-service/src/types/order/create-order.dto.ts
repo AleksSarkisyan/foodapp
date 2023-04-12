@@ -1,6 +1,6 @@
 import * as Joi from 'joi';
 
-type OrderProducts = {
+export class OrderProducts {
     productId: number;
     quantity: number;
 }

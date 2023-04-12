@@ -1,7 +1,7 @@
 import { Enums, Types } from '@asarkisyan/nestjs-foodapp-shared';
 import { Inject, Injectable } from '@nestjs/common';
 import { ClientProxy } from '@nestjs/microservices';
-import { Observable, firstValueFrom } from 'rxjs';
+import { firstValueFrom } from 'rxjs';
 import { OrderGateway } from './order.gateway';
 
 
@@ -14,19 +14,6 @@ export class OrderService {
     private orderGateway: OrderGateway
   ) {
 
-  }
-  async createOld(createOrderDto: Types.Order.CreateOrderDto) {
-    let userToken = this.userClient.send({ cmd: Enums.User.Commands.GET_USER_FROM_TOKEN }, { token: createOrderDto.token });
-    let user: Types.RestaurantUser.User = await firstValueFrom(userToken);
-    createOrderDto.userId = user.id;
-
-    let message = this.client.send({ cmd: Enums.Order.Commands.CREATE_ORDER }, createOrderDto);
-
-    let orderResult = await firstValueFrom(message)
-
-    this.orderGateway.server.emit(Enums.Restaurant.Websocket.ORDER_CREATED, JSON.stringify(orderResult))
-
-    return orderResult;
   }
 
   /* 
@@ -42,13 +29,12 @@ export class OrderService {
     3.4 Update DB with new price [ OK ]
     4 Create order [ OK ]
     4.1 Prepare array from DB with stripeProductIds and quantity [ OK ]
-    4.2 Create session and return success/error url [ OK ]
+    4.2 Create session and return stripe redirect url [ OK ]
   */
   async create(createOrderDto: Types.Order.CreateOrderDto) {
 
     /** 0 */
     createOrderDto.userId = await this.getUserFromToken(createOrderDto);
-    console.log('createOrderDto is', createOrderDto);
 
     /** 1 */
     let productOrderDetailsResult: Types.OrderProduct.OrderProductDetails = await this.getProductOrderDetails(createOrderDto);
@@ -56,93 +42,68 @@ export class OrderService {
     if (!productOrderDetailsResult.availableProducts.length) {
       return {
         success: false,
-        message: 'No products found'
+        message: Enums.Product.Messages.NO_PRODUCTS_FOUND
       }
     }
 
     /** 2 */
     let productsFound = productOrderDetailsResult.availableProducts;
-    let productsToUpdate = [];
+    let productsToUpdate: Types.OrderProduct.AvailableProducts[] = [];
 
     for (let [productKey, product] of Object.entries(productsFound)) {
       if (!product.stripeId) {
         let { stripeProduct, stripePrice } = await this.createStripeProductAndPrice(product);
-        console.log('stripeProduct is', stripeProduct)
-        console.log('stripePrice is', stripePrice)
 
         /** 2.1 */
         productsToUpdate.push({
           ...product,
-          productId: product.id,
           stripeId: stripeProduct.id,
           stripePrice: stripePrice.id,
           userId: productOrderDetailsResult.restaurantUserId['userId']
         });
-
-        console.log('productsToUpdate is', productsToUpdate)
-
       } else {
-        /** 3 Decide whether this is a good idea, since the Stripe call increases the request time from 50ms to 500ms for a single product 
+        /** 3 To do Decide whether this is a good idea, since the Stripe call increases the request time from 50ms to 500ms for a single product 
          * Use DB timestamp flag to check if priceUpdateDate > stripePriceUpdateDate
         */
-        let findStripteProductResult = await this.findStripeProduct(product);
-        console.log('findStripteProductResult is', findStripteProductResult)
+        let { price }: Types.Stripe.StripePriceDto = await this.findStripeProduct(product);
 
         /** 3.1 Price mismatch */
-        if (findStripteProductResult.price && findStripteProductResult.price.unit_amount / 100 != product.price) {
-          console.log('archive...')
+        if (price && price.unit_amount / 100 != product.price) {
           /** 3.2 & 3.3 Archive price and create new one */
-          let { archive, price } = await this.archiveAndCreateNewStripePrice(product);
-
-          console.log('archive is', archive)
-          console.log('price is', price)
+          let { price: newPrice }: Types.Stripe.StripePriceDto = await this.archiveAndCreateNewStripePrice(product);
 
           /** 3.4 Don't expect this to happen a lot, so no need to do this outside of the loop */
-          product.stripePrice = price.id;
+          product.stripePrice = newPrice.id;
           await this.updateProductCheckout(product);
         }
       }
     }
 
-    console.log('productsToUpdate is', productsToUpdate)
-
     /** 2.2 */
     if (productsToUpdate.length) {
       let updateProductsResult = await this.updateProducts(productsToUpdate, productOrderDetailsResult)
-      console.log('updateProductsResult is', updateProductsResult)
-    } else {
-      console.log('no products to update')
     }
 
     /** 4 */
     let message = this.client.send({ cmd: Enums.Order.Commands.CREATE_ORDER }, createOrderDto);
     let orderResult = await firstValueFrom(message)
-    console.log('orderResult is', orderResult)
 
-    let stripeSessionData = orderResult.stripeCheckoutSessionData;
-    console.log('stripeSessionData is', stripeSessionData)
+    let stripeSessionData: Types.Stripe.StripeCheckoutSession[] = orderResult.stripeCheckoutSessionData;
+
     /** 4.1 */
     if (!stripeSessionData.length) {
-      return {
-        error: true,
-        message: 'Could not get stripe products'
-      }
+      return stripeSessionData;
     }
 
     /** 4.2 */
-    let stripeSession = this.paymentClient.send({ cmd: 'createStripePayment' }, stripeSessionData);
+    let stripeSession = this.paymentClient.send({ cmd: Enums.Stripe.Commands.CREATE_STRIPE_SESSION }, stripeSessionData);
     let stripeSessionResult = await firstValueFrom(stripeSession);
-
-    console.log('stripeSessionResult -', stripeSessionResult)
 
     //this.orderGateway.server.emit(Enums.Restaurant.Websocket.ORDER_CREATED, JSON.stringify(orderResult))
 
     return {
       success: true,
-      productOrderDetailsResult,
-      productsFound,
-      orderResult,
-      stripeSessionResult
+      stripeRedirectUrl: stripeSessionResult.url
     }
   }
 
@@ -154,20 +115,20 @@ export class OrderService {
   }
 
   async getProductOrderDetails(createOrderDto: Types.Order.CreateOrderDto) {
-    let productOrder = this.client.send({ cmd: 'getProductOrderDetails' }, createOrderDto);
+    let productOrder = this.client.send({ cmd: Enums.Product.Commands.GET_ORDER_PRODUCT_DETAIL }, createOrderDto);
 
     return await firstValueFrom(productOrder)
   }
 
   async createStripeProductAndPrice(product: Types.OrderProduct.AvailableProducts) {
-    let createStripteAndProduct = this.paymentClient.send({ cmd: 'createStripeProductAndPrice' }, product);
+    let createStripteAndProduct = this.paymentClient.send({ cmd: Enums.Stripe.Commands.CREATE_STRIPE_PRODUCT_AND_PRICE }, product);
 
     return await firstValueFrom(createStripteAndProduct);
   }
 
   async findStripeProduct(product: Types.OrderProduct.AvailableProducts) {
     let findStripteProduct = this.paymentClient.send(
-      { cmd: 'findStripeProduct' },
+      { cmd: Enums.Stripe.Commands.FIND_STRIPE_PRODUCT },
       { productId: product.stripeId, priceId: product.stripePrice }
     );
 
@@ -176,7 +137,7 @@ export class OrderService {
 
   async archiveAndCreateNewStripePrice(product: Types.OrderProduct.AvailableProducts) {
     let archiveAndCreatePrice = this.paymentClient.send(
-      { cmd: 'archiveAndCreateNewStripePrice' },
+      { cmd: Enums.Stripe.Commands.ARCHIVE_AND_CREATE_NEW_STRIPE_PRICE },
       {
         productId: product.stripeId,
         priceId: product.stripePrice,
@@ -187,18 +148,17 @@ export class OrderService {
   }
 
   async updateProductCheckout(product: Types.OrderProduct.AvailableProducts) {
-    let updateStripeProduct = this.client.send({ cmd: 'updateProductCheckout' }, { productId: product.id, product });
+    let updateStripeProduct = this.client.send({ cmd: Enums.Product.Commands.UPDATE_PRODUCT_CHECKOUT }, { productId: product.id, product });
 
     return await firstValueFrom(updateStripeProduct)
   }
 
-  async updateProducts(productsToUpdate, productOrderDetailsResult) {
+  async updateProducts(productsToUpdate: Types.OrderProduct.AvailableProducts[], productOrderDetailsResult: Types.OrderProduct.OrderProductDetails) {
     let updateProducts = this.client.send(
-      { cmd: 'updateProducts' },
+      { cmd: Enums.Product.Commands.UPDATE_PRODUCTS },
       {
         products: productsToUpdate,
-        restaurantId: productOrderDetailsResult.restaurantId,
-        productIds: productOrderDetailsResult.productIds
+        restaurantId: productOrderDetailsResult.restaurantId
       })
     return await firstValueFrom(updateProducts);
   }

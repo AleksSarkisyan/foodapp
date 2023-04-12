@@ -1,7 +1,7 @@
 export class ProductDto {
     id: number;
     userId: number;
-    stripeId: number;
+    stripeId: string;
     categoryId: number;
     name: string;
     description: string;
@@ -13,4 +13,5 @@ export class ProductDto {
     weight: string;
     isPromo: boolean
     isActive: boolean;
+    token: string;
 }

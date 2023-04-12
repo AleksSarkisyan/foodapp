@@ -6,6 +6,8 @@ import { LocalStrategy } from './local.strategy';
 import { Types, Enums } from '@asarkisyan/nestjs-foodapp-shared';
 
 const { CREATE_RESTAURANT_USER, LOGIN_RESTAURANT_USER, IS_LOGGED_IN } = Enums.RestaurantUser.Commands
+const messages = Enums.Messages.Messages;
+
 @Controller()
 export class UserController {
   constructor(private readonly userService: UserService, private readonly localStrategy: LocalStrategy) { }
@@ -43,7 +45,7 @@ export class UserController {
         lastName,
         email
       },
-      error: 'Could not get token'
+      error: messages.TOKEN_ERROR
     }
   }
 
@@ -66,7 +68,7 @@ export class UserController {
     }
 
     return {
-      error: 'Coult not log in.'
+      error: messages.LOGIN_ERROR
     }
   }
 
@@ -75,7 +77,7 @@ export class UserController {
     try {
       return this.userService.validateToken(data.jwt);
     } catch (e) {
-      console.log('token validation failed', e);
+      console.log(messages.TOKEN_ERROR, e);
       Logger.log(e);
       return false;
     }

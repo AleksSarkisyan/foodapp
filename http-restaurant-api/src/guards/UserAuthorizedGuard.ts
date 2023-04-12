@@ -1,7 +1,9 @@
+import { Types, Enums } from '@asarkisyan/nestjs-foodapp-shared';
 import { CanActivate, ExecutionContext, Inject, Logger, mixin } from '@nestjs/common';
 import { ClientProxy } from '@nestjs/microservices';
 import { firstValueFrom } from 'rxjs';
 import { timeout } from 'rxjs/operators';
+
 
 export const UserAuthorizedGuard = (serviceName: string) => {
   class UserAuthorized implements CanActivate {
@@ -15,13 +17,12 @@ export const UserAuthorizedGuard = (serviceName: string) => {
 
       try {
         const res = this.client.send(
-          { cmd: 'isLoggedIn' },
+          { cmd: Enums.RestaurantUser.Commands.IS_LOGGED_IN },
           { jwt: req.headers['authorization'] })
           .pipe(timeout(1000));
 
         return await firstValueFrom(res);
       } catch (err) {
-        console.log('errro is', err)
         Logger.error(err);
         return false;
       }
