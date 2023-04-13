@@ -1,6 +1,8 @@
 // Next.js API route support: https://nextjs.org/docs/api-routes/introduction
 
-export default async function handler(req, res) {
+import { NextApiRequest, NextApiResponse } from "next";
+
+export default async function handler(req: NextApiRequest, res: NextApiResponse) {
   const { body, method } = req
   let { token, products, restaurantId } = JSON.parse(body);
 

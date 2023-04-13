@@ -1,6 +1,6 @@
 import { useState } from "react";
 
-export default function Home({ user }) {
+export default function Test({ user }: any) {
 
   return (
     <div>{user.token.email}</div>
@@ -24,7 +24,7 @@ export async function getServerSideProps() {
   // console.log('user is', user)
 
   // Using Nest js API routes
-  let response = await fetch('http://localhost:3000/api/hello')
+  let response = await fetch('http://localhost:3009/api/hello')
   const user = await response.json();
   console.log('user is', user)
 
@@ -48,22 +48,21 @@ export async function getServerSideProps() {
   ];
   const orderData = {
     products,
-    restaurantId: 7
+    restaurantId: 7,
+    token: `${user.token.accessToken}`,
   }
 
   const options = {
     method: 'POST',
     body: JSON.stringify(orderData),
-    headers: {
-      "Content-Type": "application/json",
-      "Authorization": `${user.token.accessToken}`
-    },
   }
+  console.log('options is', options)
 
-  // Direct call
-  let createOrder = await fetch('http://localhost:3001/api/v1/order/create', options)
-  const createOrderResult = await createOrder.json();
-  const redirectUrl = createOrderResult.stripeRedirectUrl
+  // Using Nest js API routes
+  let order = await fetch('http://localhost:3009/api/stripe/checkoutSession', options);
+  const redirectUrl = await order.json();
+
+  console.log('redirectUrl is', redirectUrl)
 
   return {
     redirect: {
