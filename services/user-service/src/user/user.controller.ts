@@ -32,7 +32,8 @@ export class UserController {
       return {
         user: {
           name,
-          email
+          email,
+          token
         },
         token,
         error: null
