@@ -16,9 +16,8 @@ const SignIn: NextPage = (props): JSX.Element => {
       redirect: false,
     });
 
-    console.log('res is', res);
     if (res?.status == 200) {
-      Router.replace("/protected")
+      Router.replace("/")
     }
 
   };
@@ -32,7 +31,7 @@ const SignIn: NextPage = (props): JSX.Element => {
             setUserInfo({ ...userInfo, email: target.value })
           }
           type="email"
-          placeholder="john@email.com"
+          placeholder="webi.aleks@gmail.com"
         />
         <input
           value={userInfo.password}
@@ -40,7 +39,7 @@ const SignIn: NextPage = (props): JSX.Element => {
             setUserInfo({ ...userInfo, password: target.value })
           }
           type="password"
-          placeholder="********"
+          placeholder="test123"
         />
         <input type="submit" value="Login" />
       </form>

@@ -1,10 +1,15 @@
 import type { NextPage } from "next";
 import Head from "next/head";
 import Image from "next/image";
-import { signIn } from "next-auth/react";
+import { getSession, signIn, useSession } from "next-auth/react";
 import styles from "../styles/Home.module.css";
+import Router from "next/router";
+
 
 const Home: NextPage = () => {
+
+  const { data: session } = useSession()
+
   return (
     <div className={styles.container}>
       <Head>
@@ -14,18 +19,32 @@ const Home: NextPage = () => {
       </Head>
 
       <main className={styles.main}>
-        <button
-          onClick={() => {
-            signIn();
-          }}
-        >
-          Login
-        </button>
+        <div>Hello {session?.user?.name}</div>
+        <button type="button" onClick={() => Router.push('/order')}>Create test order </button>
+
       </main>
 
       <footer className={styles.footer}></footer>
     </div>
   );
 };
+
+export async function getServerSideProps({ req }: any) {
+  let session = await getSession({ req });
+
+  if (!session) {
+    return {
+      redirect: {
+        destination: '/auth/signin',
+        permanent: false
+      }
+    }
+  }
+
+  return {
+    props: { session }
+  }
+
+}
 
 export default Home;

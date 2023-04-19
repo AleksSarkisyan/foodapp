@@ -6,24 +6,21 @@ const authOptions: NextAuthOptions = {
   session: {
     strategy: "jwt",
   },
-  useSecureCookies: process.env.NODE_ENV != 'development' ? true : false,
+  useSecureCookies: false,
   providers: [
     CredentialsProvider({
       type: "credentials",
       credentials: {},
 
       async authorize(credentials, req) {
-        console.log('got credentials', credentials)
         const { email, password } = credentials as {
           email: string;
           password: string;
         };
-        // perform you login logic
-        // find out user from db
 
         const body = JSON.stringify({
-          email,
-          password
+          email: 'webi.aleks@gmail.com',
+          password: 'test123'
         });
         const headers = {
           "Content-Type": "application/json"
@@ -39,31 +36,22 @@ const authOptions: NextAuthOptions = {
           throw new Error("invalid credentials");
         }
 
-        return getTokenResult.user;
+        return getTokenResult;
       }
     }),
   ],
-  secret: process.env.JWT_SECRET,
+  //secret: process.env.NEXTAUTH_SECRET,
   pages: {
-    signIn: "/auth/signin",
-    // error: '/auth/error',
-    // signOut: '/auth/signout'
+    signIn: "/auth/signin"
   },
   callbacks: {
-    jwt(params) {
-      console.log('params is', params)
-
-      if (params.user?.role) {
-        params.token.role = params.user.role;
-      }
-
-      // return final_token
-      return params.token;
+    async jwt({ token, user, account, profile }) {
+      user && (token.user = user)
+      return token
     },
-    session({ session, token }) {
-      console.log('session is', session)
-      console.log('token is', token)
-      return { ...session };
+    session({ session, user, token }: any) {
+      session.user = token.user.user;
+      return session
     },
   },
   debug: process.env.NODE_ENV === 'development',
