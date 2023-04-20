@@ -20,7 +20,21 @@ export class OrderGateway {
   create(@MessageBody() payload: any) {
     console.log('order created - ', payload);
 
-    // Broadcast message to all connected clients
+    //Broadcast message to all connected clients
+    this.server.emit('onMessage', {
+      message: 'Received message is' + payload
+    })
+  }
+
+  @SubscribeMessage('test')
+  test(@MessageBody() payload: any) {
+    console.log('test created - ', payload);
+
+    this.server.emit('test', {
+      message: 'Received test is' + payload
+    })
+
+    //Broadcast message to all connected clients
     // this.server.emit('onMessage', {
     //   message: 'Received message is' + payload
     // })
