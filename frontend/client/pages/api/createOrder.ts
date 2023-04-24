@@ -20,5 +20,5 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
         params: req.body
     })
 
-    return res.status(403).json({ apiResult });
+    return res.status(201).json({ apiResult });
 }

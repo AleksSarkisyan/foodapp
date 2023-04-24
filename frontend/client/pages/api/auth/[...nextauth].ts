@@ -27,7 +27,7 @@ const authOptions: NextAuthOptions = {
         }
 
         const method = 'POST'
-        let getToken = await fetch('http://localhost:3001/api/v1/user/login', { body, headers, method });
+        let getToken = await fetch(`${process.env.HTTP_CLIENT_API_URL}user/login`, { body, headers, method });
         const getTokenResult = await getToken.json();
 
         console.log('getTokenResult is', getTokenResult)

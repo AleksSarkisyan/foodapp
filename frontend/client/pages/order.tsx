@@ -56,7 +56,7 @@ export async function getServerSideProps({ req }: any) {
     req.body = JSON.stringify(orderData);
     req.method = 'POST';
 
-    let createOrder = await fetch('http://localhost:3009/api/createOrder', req)
+    let createOrder = await fetch(`${process.env.NEXT_API_URL}createOrder`, req)
     let createOrderResult = await createOrder.json();
 
     console.log('createOrderResult is', createOrderResult)

@@ -5,10 +5,17 @@ export const httpClientApi = async ({ method, token, path, params, queryString }
     let options = {
         method,
         headers: {
-            Authorization: `${token}`,
+            Authorization: '',
             "Content-Type": "application/json"
         },
         body: null
+    }
+
+    if (token) {
+        options.headers = {
+            ...options.headers,
+            Authorization: `${token}`
+        }
     }
 
     if (method == 'POST') {

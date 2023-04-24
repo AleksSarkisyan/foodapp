@@ -13,4 +13,10 @@ export class RestaurantService {
     return await firstValueFrom(message);
   }
 
+  async clientSearch(clientSearchDto: { location: string }) {
+    let message = this.client.send({ cmd: 'client-search' }, clientSearchDto);
+
+    return await firstValueFrom(message);
+  }
+
 }

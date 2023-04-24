@@ -19,6 +19,15 @@ export class Restaurant extends Model {
     @Column
     city: string;
 
+    @Column
+    address: string;
+
+    @Column
+    maxDeliveryDistance: number;
+
+    @Column
+    maxDeliveryTime: number;
+
     @CreatedAt
     createdAt: Date = new Date();
 

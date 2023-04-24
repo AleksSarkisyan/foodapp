@@ -19,7 +19,7 @@ export default async function handler(
       "Content-Type": "application/json"
     },
   }
-  const response = await fetch('http://localhost:3001/api/v1/user/login', options);
+  const response = await fetch(`${process.env.HTTP_CLIENT_API_URL}user/login`, options);
   const result = await response.json();
 
   return res.status(200).json(result)

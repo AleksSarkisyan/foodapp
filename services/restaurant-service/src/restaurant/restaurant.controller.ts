@@ -26,4 +26,9 @@ export class RestaurantController {
   findAll() {
     return this.restaurantService.findAll();
   }
+
+  @MessagePattern({ cmd: 'client-search' })
+  clientSearch(@Payload() clientSearchDto: { location: string }) {
+    return this.restaurantService.clientSearch(clientSearchDto);
+  }
 }

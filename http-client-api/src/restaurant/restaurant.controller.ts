@@ -1,4 +1,4 @@
-import { Controller, Get } from '@nestjs/common';
+import { Controller, Get, Post, Body } from '@nestjs/common';
 import { RestaurantService } from './restaurant.service';
 
 @Controller('restaurant')
@@ -9,6 +9,15 @@ export class RestaurantController {
   findAll() {
     try {
       return this.restaurantService.findAll();
+    } catch (error) {
+      return error;
+    }
+  }
+
+  @Post('client-search')
+  clientSearch(@Body() clientSearchDto: { location: string }) {
+    try {
+      return this.restaurantService.clientSearch(clientSearchDto);
     } catch (error) {
       return error;
     }

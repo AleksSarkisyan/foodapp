@@ -20,6 +20,7 @@ import { OrderModule } from './order/order.module';
 import { Order } from './order/entities/order.entity';
 import { OrderProductModule } from './order-product/order-product.module';
 import { OrderProduct } from './order-product/entities/order-product.entity';
+import { MapquestModule } from './mapquest/mapquest.module';
 
 @Module({
   imports: [
@@ -49,7 +50,8 @@ import { OrderProduct } from './order-product/entities/order-product.entity';
     ProductModule,
     MenuProductModule,
     OrderModule,
-    OrderProductModule],
+    OrderProductModule,
+    MapquestModule],
   controllers: [AppController],
   providers: [AppService, LocalStrategy],
 })
