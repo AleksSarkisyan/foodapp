@@ -16,7 +16,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     let apiResult = await httpRestaurantApi({
         method: 'POST',
         token: accessToken,
-        path: 'order/create',
+        path: 'restaurant/getRestaurantsByUserId',
         params: req.body
     })
 

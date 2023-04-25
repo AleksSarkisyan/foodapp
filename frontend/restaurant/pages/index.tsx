@@ -6,11 +6,12 @@ import styles from "../styles/Home.module.css";
 import Router from "next/router";
 import { FormEventHandler, useState } from "react";
 
-const Home: NextPage = () => {
+const Home: NextPage = ({ restaurants }: any) => {
 
   const { data: session } = useSession();
 
   console.log('session is', session)
+  console.log('restaurants is', restaurants)
 
   return (
     <div className={styles.container}>
@@ -22,6 +23,15 @@ const Home: NextPage = () => {
 
       <main className={styles.main}>
         <div>Hello {session?.user?.email}</div>
+        {restaurants.length > 0 && (<div>
+          <p>Your restaurants:</p>
+          <div>
+            {restaurants.map((restaurant: any) => (
+              <p key={restaurant['id']}>{restaurant['name']}</p>
+            ))}
+          </div>
+        </div>)}
+
       </main>
 
       <footer className={styles.footer}></footer>
@@ -31,7 +41,11 @@ const Home: NextPage = () => {
 
 export async function getServerSideProps({ req }: any) {
   let session = await getSession({ req });
-  console.log('req session is', session)
+  let restaurants = await fetch(`${process.env.NEXT_API_URL}restaurants`, req)
+  let restaurantsResult = await restaurants.json();
+
+  console.log('restaurantsResult is', restaurantsResult)
+
   if (!session) {
     return {
       redirect: {
@@ -42,7 +56,10 @@ export async function getServerSideProps({ req }: any) {
   }
 
   return {
-    props: { session }
+    props: {
+      session,
+      restaurants: restaurantsResult.apiResult
+    }
   }
 
 }

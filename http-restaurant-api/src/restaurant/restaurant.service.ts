@@ -19,4 +19,10 @@ export class RestaurantService {
 
     return await firstValueFrom(message);
   }
+
+  async getRestaurantsByUserId(getRestaurantsByUserIdDto: { token: string }) {
+    let message = this.client.send({ cmd: 'getRestaurantsByUserId' }, getRestaurantsByUserIdDto);
+
+    return await firstValueFrom(message);
+  }
 }

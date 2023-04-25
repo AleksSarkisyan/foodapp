@@ -31,4 +31,9 @@ export class RestaurantController {
   clientSearch(@Payload() clientSearchDto: { location: string }) {
     return this.restaurantService.clientSearch(clientSearchDto);
   }
+
+  @MessagePattern({ cmd: 'getRestaurantsByUserId' })
+  getRestaurantsByUserId(@Payload() getRestaurantsByUserIdDto: { token: string }) {
+    return this.restaurantService.getRestaurantsByUserId(getRestaurantsByUserIdDto);
+  }
 }

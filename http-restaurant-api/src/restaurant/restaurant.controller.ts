@@ -21,4 +21,11 @@ export class RestaurantController {
     updateRestaurantDto.token = headers['authorization'];
     return await this.restaurantService.update(updateRestaurantDto);
   }
+
+  @UseGuards(UserAuthorizedGuard(Enums.Restaurant.Generic.SERVICE_NAME))
+  @Post('/getRestaurantsByUserId')
+  async getRestaurantsByUserId(@Body() getRestaurantsByUserIdDto: { token: string }, @Headers() headers): Promise<string> {
+    getRestaurantsByUserIdDto.token = headers['authorization'];
+    return await this.restaurantService.getRestaurantsByUserId(getRestaurantsByUserIdDto);
+  }
 }

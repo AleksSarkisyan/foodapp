@@ -120,6 +120,18 @@ export class RestaurantService {
     return availableRestaurants;
   }
 
+  async getRestaurantsByUserId(getRestaurantsByUserIdDto: { token: string }) {
+    let { id: userId } = await this.userService.getUserFromToken(getRestaurantsByUserIdDto.token);
+
+    const restaurants: Restaurant[] = await this.restaurantModel.findAll({
+      where: {
+        userId,
+      },
+    });
+
+    return restaurants;
+  }
+
   errorMessage(message: string) {
     Logger.log(message);
     return {
