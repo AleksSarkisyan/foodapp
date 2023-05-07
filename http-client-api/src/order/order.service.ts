@@ -34,11 +34,11 @@ export class OrderService {
   async create(createOrderDto: Types.Order.CreateOrderDto) {
 
     /** WS testing */
-    // this.orderGateway.server.emit(Enums.Restaurant.Websocket.ORDER_CREATED, JSON.stringify({ message: 'OK!' }))
-    // return {
-    //   success: true,
-    //   message: 'OK'
-    // }
+    this.orderGateway.server.emit(Enums.Restaurant.Websocket.ORDER_CREATED, JSON.stringify({ message: 'Order created!' }))
+    return {
+      success: true,
+      message: 'OK'
+    }
     /** 0 */
     createOrderDto.userId = await this.getUserFromToken(createOrderDto);
 

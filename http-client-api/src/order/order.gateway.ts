@@ -26,13 +26,11 @@ export class OrderGateway {
     })
   }
 
-  @SubscribeMessage('test')
-  test(@MessageBody() payload: any) {
-    console.log('test created - ', payload);
+  @SubscribeMessage('orderConfirmed')
+  orderConfirmed(@MessageBody() payload: any) {
+    console.log('orderConfirmed - ', payload);
 
-    this.server.emit('test', {
-      message: 'Received test is' + payload
-    })
+    this.server.emit('orderConfirmed', payload)
 
     //Broadcast message to all connected clients
     // this.server.emit('onMessage', {

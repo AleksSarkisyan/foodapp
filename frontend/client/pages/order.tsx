@@ -70,23 +70,11 @@ export async function getServerSideProps({ req }: any) {
 
         socket.on("connect", () => {
             console.log("SOCKET CONNECTED!", socket.id);
-
-            socket.on('orderCreated', msg => {
-                console.log('got message...', msg)
-            })
-
-            socket.on("onMessage", (message: any) => {
-                console.log('got onMessage', message)
-            });
-
-            socket.emit("orderReceivedByRestaurant", JSON.stringify({ status: 'orderCreated by user...' }));
-            socket.emit("test", JSON.stringify({ status: 'this is a test' }));
+            socket.emit("orderCreated", JSON.stringify({ status: 'orderCreated by user...' }));
         });
 
-        socket.emit("orderCreated", JSON.stringify({ status: 'orderCreated by user...' }));
-
-        socket.on("orderReceivedByRestaurant2", (message: any) => {
-            console.log('got message000', message)
+        socket.on("orderConfirmed", (message: any) => {
+            console.log('got orderConfirmed', message)
         });
 
         return {

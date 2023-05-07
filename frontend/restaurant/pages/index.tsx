@@ -4,14 +4,51 @@ import Image from "next/image";
 import { getSession, signIn, useSession } from "next-auth/react";
 import styles from "../styles/Home.module.css";
 import Router from "next/router";
-import { FormEventHandler, useState } from "react";
+import { FormEventHandler, useEffect, useState } from "react";
+import io from "socket.io-client";
 
+
+let socket: any;
 const Home: NextPage = ({ restaurants }: any) => {
 
   const { data: session } = useSession();
+  const [message, setMessage] = useState({ message: null });
 
   console.log('session is', session)
   console.log('restaurants is', restaurants)
+
+  useEffect(() => {
+    socket = io("http://localhost:3001");
+
+    socket.on("connect", () => {
+      console.log("SOCKET CONNECTED!", socket.id);
+
+      socket.on('orderCreated', (msg: any) => {
+        console.log('got message...', msg)
+        let message = JSON.parse(msg);
+        setMessage({ message: message.message })
+
+      })
+
+      socket.on("onMessage", (message: any) => {
+        console.log('got onMessage', message)
+      });
+
+
+    });
+
+    socket.on("orderReceivedByRestaurant2", (message: any) => {
+      console.log('got message000', message)
+    });
+
+  }, []);
+
+  const confirmOrder = (orderNumber: number) => {
+    console.log('got orderNumber', orderNumber)
+    console.log('socket is', socket.id)
+
+    socket.emit("orderConfirmed", JSON.stringify({ message: 'orderConfirmed', orderNumber }));
+  }
 
   return (
     <div className={styles.container}>
@@ -32,6 +69,11 @@ const Home: NextPage = ({ restaurants }: any) => {
           </div>
         </div>)}
 
+        {message.message && (<div>
+          <p>New order received:</p>
+          <div onClick={() => confirmOrder(123)}>{message.message}</div>
+        </div>)}
+
       </main>
 
       <footer className={styles.footer}></footer>
@@ -46,6 +88,40 @@ export async function getServerSideProps({ req }: any) {
 
   console.log('restaurantsResult is', restaurantsResult)
 
+  // Cannot return it to the client since getServerSideProps is triggered on initial page load
+  // let message = null;
+
+  // const socket = io("http://localhost:3001");
+
+  // socket.on("connect", () => {
+  //   console.log("SOCKET CONNECTED!", socket.id);
+
+  //   socket.on('orderCreated', msg => {
+  //     console.log('got message...', msg)
+  //     message = msg;
+  //     // return {
+  //     //   props: {
+  //     //     session,
+  //     //     message
+  //     //   }
+  //     // }
+  //   })
+
+  //   socket.on("onMessage", (message: any) => {
+  //     console.log('got onMessage', message)
+  //   });
+
+
+  // });
+
+
+  // socket.on("orderReceivedByRestaurant2", (message: any) => {
+  //   console.log('got message000', message)
+  // });
+
+
+  // console.log('message is...', message)
+
   if (!session) {
     return {
       redirect: {
@@ -58,7 +134,8 @@ export async function getServerSideProps({ req }: any) {
   return {
     props: {
       session,
-      restaurants: restaurantsResult.apiResult
+      restaurants: restaurantsResult.apiResult,
+
     }
   }
 
