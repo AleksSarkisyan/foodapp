@@ -1,15 +1,14 @@
 import { NextApiRequest, NextPage } from "next";
-import { getSession, useSession } from "next-auth/react";
+import { useSession } from "next-auth/react";
 import Router from "next/router";
 import { useEffect, useState } from "react";
 import io from "socket.io-client";
 
-
-const Order: NextPage = ({ apiResult, initSocket }: any): JSX.Element => {
+let socket: any;
+const Order: NextPage = ({ apiResult, initSocket, message }: any): JSX.Element => {
     const { status, data } = useSession();
     const [connected, setConnected] = useState<boolean>(false);
-
-    console.log('initSocket--', initSocket)
+    const [orderConfirmed, setOrderConfirmed] = useState({ message: null });
 
     useEffect(() => {
         if (status === "unauthenticated") {
@@ -17,14 +16,26 @@ const Order: NextPage = ({ apiResult, initSocket }: any): JSX.Element => {
         }
     }, [status]);
 
+    useEffect(() => {
+        socket = io(`${process.env.NEXT_PUBLIC_WS_URL}`);
+
+        socket.on("connect", () => {
+            socket.on("orderConfirmed", (message: any) => {
+                setOrderConfirmed({ message })
+            });
+        });
+    }, []);
+
     return (
         <div>
             This page is Protected for special people like{"\n"}
             {JSON.stringify(data?.user?.name, null, 2)} <br />
             {apiResult && apiResult.message}
+            {orderConfirmed.message && (
+                <div>Restaurant confirmed your order {orderConfirmed.message}</div>
+            )}
         </div>
     );
-
 };
 
 export default Order;
@@ -59,36 +70,10 @@ export async function getServerSideProps({ req }: any) {
     let createOrder = await fetch(`${process.env.NEXT_API_URL}createOrder`, req)
     let createOrderResult = await createOrder.json();
 
-    console.log('createOrderResult is', createOrderResult)
-
-    /** WS testing */
-    let initSocket = false;
-    if (createOrderResult.apiResult.success) {
-        initSocket = true
-
-        const socket = io("http://localhost:3001");
-
-        socket.on("connect", () => {
-            console.log("SOCKET CONNECTED!", socket.id);
-            socket.emit("orderCreated", JSON.stringify({ status: 'orderCreated by user...' }));
-        });
-
-        socket.on("orderConfirmed", (message: any) => {
-            console.log('got orderConfirmed', message)
-        });
-
-        return {
-            props: {
-                initSocket
-            }
-        }
-    }
-
     /** Got an error */
     if (!createOrderResult || !createOrderResult.apiResult) {
         let { apiResult } = createOrderResult
 
-        console.log('apiResult is---', apiResult)
         return {
             props: {
                 apiResult
@@ -98,6 +83,14 @@ export async function getServerSideProps({ req }: any) {
 
     /** Got a successful response */
     let redirectUrl = createOrderResult.apiResult.stripeRedirectUrl;
+
+    if (!redirectUrl) {
+        return {
+            props: {
+
+            }
+        }
+    }
 
     return {
         props: {
