@@ -5,6 +5,7 @@ import CredentialsProvider from "next-auth/providers/credentials";
 const authOptions: NextAuthOptions = {
   session: {
     strategy: "jwt",
+    maxAge: 600
   },
   useSecureCookies: false,
   providers: [

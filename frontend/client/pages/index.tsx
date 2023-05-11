@@ -1,17 +1,17 @@
 import type { NextPage } from "next";
 import Head from "next/head";
-import Image from "next/image";
-import { getSession, signIn, useSession } from "next-auth/react";
+import { getSession, useSession } from "next-auth/react";
 import styles from "../styles/Home.module.css";
 import Router from "next/router";
 import { FormEventHandler, useState } from "react";
+import { Restaurant } from "../types/restaurant";
 
 const Home: NextPage = () => {
 
   const { data: session } = useSession();
   const [address, setAddress] = useState({ location: "" });
   const [error, setError] = useState({ error: '', message: '' });
-  const [restaurants, setRestaurants] = useState([]);
+  const [restaurants, setRestaurants] = useState<Restaurant[]>([]);
   const [searching, setIsSearching] = useState(false);
 
   const searchRestaurants: FormEventHandler<HTMLFormElement> = async (e) => {
@@ -40,10 +40,13 @@ const Home: NextPage = () => {
       })
     }
 
-    setRestaurants(searchRestaurantsResult.apiResult);
+    setRestaurants(searchRestaurantsResult.apiResult as Restaurant[]);
     setIsSearching(false);
   };
 
+  const restaurantRedirect = (restaurantId: number) => {
+    Router.push(`restaurant/${restaurantId}`)
+  }
 
   return (
     <div className={styles.container}>
@@ -77,7 +80,7 @@ const Home: NextPage = () => {
 
           {restaurants.length > 0 && <div>
             {restaurants.map((restaurant) => (
-              <p key={restaurant['id']}>{restaurant['name']}</p>
+              <p key={restaurant.id} onClick={() => restaurantRedirect(restaurant.id)}>{restaurant.name}</p>
             ))}
           </div>}
         </div>
