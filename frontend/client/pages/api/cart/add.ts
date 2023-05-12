@@ -1,4 +1,4 @@
-import { JWT, getToken } from "next-auth/jwt"
+import { getToken } from "next-auth/jwt"
 import { NextApiRequest, NextApiResponse } from "next";
 import { AddToCartParams } from "../../../types/cart";
 import { createRedisInstance } from "../../../services/redis";

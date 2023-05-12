@@ -5,9 +5,11 @@ export type Products = {
     description: string;
     weight: string;
     price: number;
+    quantity?: number;
 }
 
 export type CategoryProducts = {
-    categoryName: string;
+    categoryName?: string;
     products: Products[];
+    createOrder: () => Promise<any>;
 }

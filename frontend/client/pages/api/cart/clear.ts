@@ -1,9 +1,6 @@
-import { JWT, getToken } from "next-auth/jwt"
+import { getToken } from "next-auth/jwt"
 import { NextApiRequest, NextApiResponse } from "next";
-import { AddToCartParams } from "../../../types/cart";
 import { createRedisInstance } from "../../../services/redis";
-
-
 
 export default async function handler(req: NextApiRequest, res: NextApiResponse) {
   const token: any = await getToken({ req });
@@ -14,7 +11,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
 
   const redis = createRedisInstance();
   const email: string = token?.user.user.email;
-  let cacheKey = `user_${email}`;
+  let cacheKey = `cart_user_${email}`;
 
   let userCartExists = await redis.exists(cacheKey);
 

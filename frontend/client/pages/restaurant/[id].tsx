@@ -1,16 +1,47 @@
 import type { GetServerSideProps, NextPage } from "next";
-import { useEffect } from "react";
+import { useEffect, useContext } from "react";
 import { getSession } from "next-auth/react";
 import { CategoryProducts, Products } from "../../types/category-products";
 import { NextRestaurantPageProps } from "../../types/restaurant";
 import { RestaurantQueryParams } from "../../types/restaurant";
 import { AddToCartParams } from "../../types/cart";
-
+import { ModalContext } from "../../context/modalConext";
+import { Cart } from "../../components/cart/cart";
+import { useRouter } from "next/router";
 
 const Restaurant: NextPage<NextRestaurantPageProps> = ({ categoryProducts, error }): JSX.Element => {
 
+    let { handleModal, modal }: any = useContext(ModalContext);
+    const router = useRouter()
+    const { id: restaurantId } = router.query;
+
     useEffect(() => {
+        if (!modal) {
+            clearCart();
+        }
+    }, [!modal]);
+
+    useEffect(() => {
+        const handleRouteChange = () => {
+            clearCart();
+        }
+
+        router.events.on('routeChangeStart', handleRouteChange)
+
+        return () => {
+            router.events.off('routeChangeStart', handleRouteChange)
+        }
     }, []);
+
+    const clearCart = async () => {
+        let clear = await fetch(`${process.env.NEXT_PUBLIC_API_URL}cart/clear`);
+        await clear.json();
+        handleModal();
+    }
+
+    const createOrder = async () => {
+        console.log('to do create order....', restaurantId)
+    }
 
     const addToCart = async ({ productId, quantity, price, name, weight }: AddToCartParams) => {
         let body = JSON.stringify({
@@ -24,7 +55,7 @@ const Restaurant: NextPage<NextRestaurantPageProps> = ({ categoryProducts, error
         let addToCart = await fetch(`${process.env.NEXT_PUBLIC_API_URL}cart/add`, { body, method: 'POST' })
         let addToCartResult = await addToCart.json();
 
-        console.log('addToCartResult is', addToCartResult)
+        handleModal(<Cart products={JSON.parse(addToCartResult.products)} createOrder={() => createOrder()} />)
     }
 
     return <div>
@@ -77,10 +108,6 @@ export const getServerSideProps: GetServerSideProps = async ({ params, req, res 
 
     let categoryProducts = await fetch(`${process.env.NEXT_API_URL}restaurant/${id}`)
     let categoryProductsResult: CategoryProducts[] = await categoryProducts.json();
-
-    let clearCart = await fetch(`${process.env.NEXT_API_URL}cart/clear`, req as RequestInit);
-    let clearCartResult = await clearCart.json();
-    console.log('got clearCartResult', clearCartResult)
 
     if (!categoryProductsResult.length) {
         return {
