@@ -5,6 +5,7 @@ import CredentialsProvider from "next-auth/providers/credentials";
 const authOptions: NextAuthOptions = {
   session: {
     strategy: "jwt",
+    maxAge: 600
   },
   useSecureCookies: false,
   providers: [
@@ -29,8 +30,6 @@ const authOptions: NextAuthOptions = {
         const method = 'POST'
         let getToken = await fetch(`${process.env.HTTP_CLIENT_API_URL}user/login`, { body, headers, method });
         const getTokenResult = await getToken.json();
-
-        console.log('getTokenResult is', getTokenResult)
 
         if (!getTokenResult || getTokenResult.error) {
           throw new Error("invalid credentials");

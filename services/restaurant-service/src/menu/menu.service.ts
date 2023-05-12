@@ -28,7 +28,7 @@ export class MenuService {
         restaurants.menu_id as menu_id,
         menus.name as menu_name,
         menus_products.menu_id,
-        menus_products.product_id,
+        menus_products.product_id as productId,
         products.*,
         menus.id
         FROM menus
@@ -40,7 +40,10 @@ export class MenuService {
       `);
 
       if (results.length) {
-        data.push({ [category.name]: results });
+        data.push({
+          categoryName: category.name,
+          products: results
+        })
       }
     }
 
