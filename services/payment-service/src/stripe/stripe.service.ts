@@ -24,16 +24,10 @@ export class StripeService {
     });
   }
 
-  async createStripeProductAndPrice(product: Types.Product.ProductDto) {
-    let price = this.formatPrice(product.price);
-
+  async createStripeProduct(product: Types.Product.ProductDto) {
     let stripeProduct = await this.stripe.products.create({
       name: product.name,
-      description: product.description,
-      default_price_data: {
-        currency: 'bgn',
-        unit_amount_decimal: price
-      }
+      description: product.description
     })
 
     if (!stripeProduct.id) {

@@ -16,7 +16,7 @@ export class StripeController {
   @MessagePattern({ cmd: Enums.Stripe.Commands.CREATE_STRIPE_PRODUCT_AND_PRICE })
   async createStripeProductAndPrice(@Payload() product: Types.Product.ProductDto) {
 
-    let stripeProduct = await this.stripeService.createStripeProductAndPrice(product);
+    let stripeProduct = await this.stripeService.createStripeProduct(product);
     let stripePrice = await this.stripeService.createStripePrice(stripeProduct['id'], product.price);
 
     return {
@@ -38,8 +38,12 @@ export class StripeController {
 
   @MessagePattern({ cmd: Enums.Stripe.Commands.ARCHIVE_AND_CREATE_NEW_STRIPE_PRICE })
   async archiveAndCreateNewStripePrice(@Payload() { productId, priceId, productPrice }) {
-    let archive = await this.stripeService.archiveStripePrice(priceId);
     let price = await this.stripeService.createStripePrice(productId, productPrice);
+    let archive = null;
+
+    if (price) {
+      archive = await this.stripeService.archiveStripePrice(priceId);
+    }
 
     return {
       archive,

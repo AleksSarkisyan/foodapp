@@ -2,8 +2,8 @@ import { getToken } from "next-auth/jwt"
 import { httpClientApi } from "../../services/httpClientApi"
 import { NextApiRequest, NextApiResponse } from "next";
 
-const secret = process.env.NEXTAUTH_SECRET
 
+/** Used for creating a test order */
 export default async function handler(req: NextApiRequest, res: NextApiResponse) {
     const token: any = await getToken({ req })
 

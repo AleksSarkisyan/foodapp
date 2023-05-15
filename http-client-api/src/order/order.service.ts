@@ -34,11 +34,11 @@ export class OrderService {
   async create(createOrderDto: Types.Order.CreateOrderDto) {
 
     /** WS testing */
-    this.orderGateway.server.emit(Enums.Restaurant.Websocket.ORDER_CREATED, JSON.stringify({ message: 'Order created!', order: createOrderDto }))
-    return {
-      success: true,
-      message: 'OK'
-    }
+    // this.orderGateway.server.emit(Enums.Restaurant.Websocket.ORDER_CREATED, JSON.stringify({ message: 'Order created!', order: createOrderDto }))
+    // return {
+    //   success: true,
+    //   message: 'OK'
+    // }
     /** 0 */
     createOrderDto.userId = await this.getUserFromToken(createOrderDto);
 
@@ -87,7 +87,7 @@ export class OrderService {
 
     /** 2.2 */
     if (productsToUpdate.length) {
-      let updateProductsResult = await this.updateProducts(productsToUpdate, productOrderDetailsResult)
+      await this.updateProducts(productsToUpdate, productOrderDetailsResult)
     }
 
     /** 4 */
@@ -106,7 +106,7 @@ export class OrderService {
     let stripeSessionResult = await firstValueFrom(stripeSession);
 
     /** to do This should happen only after a successful payment */
-    this.orderGateway.server.emit(Enums.Restaurant.Websocket.ORDER_CREATED, JSON.stringify({ message: 'Order created!', order: createOrderDto }))
+    // this.orderGateway.server.emit(Enums.Restaurant.Websocket.ORDER_CREATED, JSON.stringify({ message: 'Order created!', order: createOrderDto }))
 
     return {
       success: true,

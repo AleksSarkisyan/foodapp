@@ -65,7 +65,7 @@ export class ProductService {
   async updateProducts(productsData: Types.OrderProduct.AvailableProducts[], restaurantId: number) {
     let restaurant = await this.restaurantService.findOne(restaurantId)
 
-    if (!restaurant.id) {
+    if (!restaurant.userId) {
       return this.errorMessage(Enums.Messages.Messages.FIND_RESTAURANT_ERROR);
     }
 

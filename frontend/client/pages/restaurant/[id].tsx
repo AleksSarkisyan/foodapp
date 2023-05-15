@@ -40,7 +40,19 @@ const Restaurant: NextPage<NextRestaurantPageProps> = ({ categoryProducts, error
     }
 
     const createOrder = async () => {
-        console.log('to do create order....', restaurantId)
+        let body = JSON.stringify({
+            restaurantId
+        });
+
+        let createOrder = await fetch(`${process.env.NEXT_PUBLIC_API_URL}order/create`, { body, method: 'POST' })
+        let createOrderResult = await createOrder.json();
+
+        console.log('createOrderResult is', createOrderResult)
+        let { stripeRedirectUrl } = createOrderResult
+
+        if (stripeRedirectUrl) {
+            window.location.assign(stripeRedirectUrl)
+        }
     }
 
     const addToCart = async ({ productId, quantity, price, name, weight }: AddToCartParams) => {
