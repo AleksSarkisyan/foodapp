@@ -114,7 +114,7 @@ export class OrderService {
     }
   }
 
-  async getUserFromToken(createOrderDto: Types.Order.CreateOrderDto) {
+  async getUserFromToken(createOrderDto: Types.Order.CreateOrderDto | { token: string }) {
     let userToken = this.userClient.send({ cmd: Enums.User.Commands.GET_USER_FROM_TOKEN }, { token: createOrderDto.token });
     let user: Types.User.User = await firstValueFrom(userToken);
 
@@ -168,6 +168,38 @@ export class OrderService {
         restaurantId: productOrderDetailsResult.restaurantId
       })
     return await firstValueFrom(updateProducts);
+  }
+
+  async notifyRestaurant(notifyRestaurantDto: { token: string }) {
+    /** Get token */
+    let userId = await this.getUserFromToken(notifyRestaurantDto);
+
+    if (!userId) {
+      return {
+        success: false,
+        message: Enums.User.Messages.USER_NOT_FOUND
+      }
+    }
+
+    /** Check if user has an actual order in created status */
+    let latestOrder = this.client.send({ cmd: 'getLastUserOrder' }, { userId });
+    let latestOrderResult = await firstValueFrom(latestOrder)
+
+    console.log('latestOrderResult is', latestOrderResult)
+
+    if (!latestOrderResult.order.id) {
+      return {
+        success: false,
+        message: 'Could not find order'
+      }
+    }
+
+    let { order, orderDetails } = latestOrderResult;
+
+    /** Notify restaurant */
+    this.orderGateway.server.emit(Enums.Restaurant.Websocket.ORDER_CREATED, JSON.stringify({ message: 'Order created!', order, orderDetails }))
+
+    return latestOrderResult;
   }
 
 }

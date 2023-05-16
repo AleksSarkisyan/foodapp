@@ -19,8 +19,8 @@ export class StripeService {
     return await this.stripe.checkout.sessions.create({
       line_items: productData,
       mode: 'payment',
-      success_url: `http://localhost:3009/success`, // FE urls
-      cancel_url: `http://localhost:3009/cancel`,
+      success_url: `http://localhost:3009/order/success`, // FE urls
+      cancel_url: `http://localhost:3009/order/cancel`,
     });
   }
 

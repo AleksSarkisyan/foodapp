@@ -30,8 +30,6 @@ const authOptions: NextAuthOptions = {
         let getToken = await fetch(`${process.env.HTTP_RESTAURANT_API_URL}user/login`, { body, headers, method });
         const getTokenResult = await getToken.json();
 
-        console.log('getTokenResult is', getTokenResult)
-
         if (!getTokenResult || getTokenResult.error) {
           throw new Error("invalid credentials");
         }

@@ -7,8 +7,10 @@ import { Product } from 'src/product/entities/product.entity';
 import { ProductService } from 'src/product/product.service';
 import { RestaurantService } from 'src/restaurant/restaurant.service';
 import { Order } from './entities/order.entity';
+import { QueryTypes } from 'sequelize';
 
 const messages = Enums.Messages.Messages;
+const orderStatuses = Enums.Order.OrderStatuses
 
 @Injectable()
 export class OrderService {
@@ -34,7 +36,7 @@ export class OrderService {
       restaurantId,
       totalQuantity,
       totalPrice: 0,
-      status: 'CREATED'
+      status: orderStatuses.CREATED
     }
 
     const order = await this.orderModel.create({ ...orderData });
@@ -85,7 +87,7 @@ export class OrderService {
       let additional = {
         totalQuantity,
         totalPrice,
-        status: 'CREATED'
+        status: orderStatuses.CREATED
       }
 
       return {
@@ -121,6 +123,33 @@ export class OrderService {
       productIds,
       totalQuantity,
       availableProducts
+    }
+  }
+
+  async getLastUserOrder(getLastUserOrderDto: { userId: number }) {
+    let orderArray: any = await Order.sequelize.query(`
+      SELECT 
+        orders.*,
+        restaurants.id as restaurantId, restaurants.name as restaurantName
+      FROM orders
+        JOIN restaurants ON restaurants.id = orders.restaurant_id
+        WHERE orders.user_id = ${getLastUserOrderDto.userId} AND orders.status = '${orderStatuses.CREATED}'
+        ORDER BY orders.created_at DESC
+        LIMIT 1;
+    `, { type: QueryTypes.SELECT });
+
+    let order = orderArray[0]
+
+    let orderDetails = null;
+
+    if (order.id) {
+      orderDetails = await this.orderProductService.findByOrderId(order.id);
+    }
+
+    return {
+      order,
+      orderDetails,
+      restaurantId: order.restaurantId
     }
   }
 

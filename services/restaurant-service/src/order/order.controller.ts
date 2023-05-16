@@ -17,4 +17,9 @@ export class OrderController {
     return this.orderService.getProductOrderDetails(createOrderDto);
   }
 
+  @MessagePattern({ cmd: 'getLastUserOrder' })
+  getLastUserOrder(@Payload() getLastUserOrderDto: { userId: number }) {
+    return this.orderService.getLastUserOrder(getLastUserOrderDto);
+  }
+
 }

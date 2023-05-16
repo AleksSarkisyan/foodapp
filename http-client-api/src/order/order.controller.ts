@@ -14,4 +14,11 @@ export class OrderController {
     createOrderDto.token = headers['authorization'];
     return await this.orderService.create(createOrderDto);
   }
+
+  @Post('/notify-restaurant')
+  @UseGuards(UserAuthorizedGuard(Enums.User.Generic.SERVICE_NAME))
+  async notifyRestaurant(@Body() notifyRestaurantDto: { token: string }, @Headers() headers) {
+    notifyRestaurantDto.token = headers['authorization'];
+    return await this.orderService.notifyRestaurant(notifyRestaurantDto);
+  }
 }

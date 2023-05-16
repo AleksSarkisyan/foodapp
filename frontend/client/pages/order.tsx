@@ -1,9 +1,10 @@
-import { NextApiRequest, NextPage } from "next";
+import { NextPage } from "next";
 import { useSession } from "next-auth/react";
 import Router from "next/router";
 import { useEffect, useState } from "react";
 import io from "socket.io-client";
 
+/** Used for creating a test order */
 let socket: any;
 const Order: NextPage = ({ apiResult, initSocket, message }: any): JSX.Element => {
     const { status, data } = useSession();

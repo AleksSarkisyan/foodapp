@@ -9,7 +9,7 @@ let socket: any;
 const Restaurant: NextPage = (): JSX.Element => {
     const router = useRouter()
     const { id } = router.query;
-    const [message, setMessage] = useState({ message: null, order: { totalQuantity: null, totalPrice: null } });
+    const [message, setMessage] = useState({ message: null, order: { totalQuantity: null, totalPrice: null, id: 0 } });
 
     useEffect(() => {
         socket = io(`${process.env.NEXT_PUBLIC_WS_URL}`);
@@ -19,6 +19,7 @@ const Restaurant: NextPage = (): JSX.Element => {
 
             socket.on('orderCreated', (msg: any) => {
                 let message = JSON.parse(msg);
+                console.log('got order', message)
 
                 if (message.order.restaurantId == id) {
                     setMessage({ message: message.message, order: message.order })
@@ -34,7 +35,7 @@ const Restaurant: NextPage = (): JSX.Element => {
 
         {message.message && (<div>
             <p>New order received:</p>
-            <div onClick={() => confirmOrder(123)}>{message.message} - Click to confirm</div>
+            <div onClick={() => confirmOrder(message.order.id)}>{message.message} - Click to confirm</div>
             {/* <p>Total quantity: {message.order.totalQuantity}</p>
             <p>Total price: {message.order.totalPrice}</p> */}
         </div>)}
