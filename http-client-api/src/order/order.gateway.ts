@@ -6,13 +6,23 @@ import {
   MessageBody
 } from '@nestjs/websockets';
 import { Server } from 'socket.io';
+import { OrderService } from './order.service';
+import { Inject, Injectable } from '@nestjs/common';
+import { ClientProxy } from '@nestjs/microservices';
+import { firstValueFrom } from 'rxjs';
+
+
 
 @WebSocketGateway({
   cors: {
     origin: '*',
   }
 })
+
+@Injectable()
 export class OrderGateway {
+  constructor(
+    @Inject(Enums.Restaurant.Generic.SERVICE_NAME) public client: ClientProxy) { }
   @WebSocketServer()
   server: Server;
 
@@ -27,14 +37,20 @@ export class OrderGateway {
   }
 
   @SubscribeMessage('orderConfirmed')
-  orderConfirmed(@MessageBody() payload: any) {
-    console.log('orderConfirmed - ', payload);
-
+  async orderConfirmed(@MessageBody() payload: string) {
     this.server.emit('orderConfirmed', payload)
 
-    //Broadcast message to all connected clients
-    // this.server.emit('onMessage', {
-    //   message: 'Received message is' + payload
-    // })
+    const order = JSON.parse(payload);
+    const orderId = order.orderNumber;
+
+    let updateOrderStatus = this.client.send({
+      cmd: 'updateOrderStatus'
+    },
+      {
+        orderId,
+        status: Enums.Order.OrderStatuses.RESTAURANT_RECEIVED
+      });
+
+    await firstValueFrom(updateOrderStatus);
   }
 }

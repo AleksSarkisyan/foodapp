@@ -185,8 +185,6 @@ export class OrderService {
     let latestOrder = this.client.send({ cmd: 'getLastUserOrder' }, { userId });
     let latestOrderResult = await firstValueFrom(latestOrder)
 
-    console.log('latestOrderResult is', latestOrderResult)
-
     if (!latestOrderResult.order.id) {
       return {
         success: false,
@@ -197,7 +195,10 @@ export class OrderService {
     let { order, orderDetails } = latestOrderResult;
 
     /** Notify restaurant */
-    this.orderGateway.server.emit(Enums.Restaurant.Websocket.ORDER_CREATED, JSON.stringify({ message: 'Order created!', order, orderDetails }))
+    this.orderGateway.server.emit(Enums.Restaurant.Websocket.ORDER_CREATED, JSON.stringify({ message: 'Order created!', order, orderDetails }));
+
+    let updateOrderStatus = this.client.send({ cmd: 'updateOrderStatus' }, { orderId: order.id, status: Enums.Order.OrderStatuses.RESTAURANT_NOTIFIED });
+    await firstValueFrom(updateOrderStatus);
 
     return latestOrderResult;
   }

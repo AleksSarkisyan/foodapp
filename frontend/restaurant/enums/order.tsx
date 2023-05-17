@@ -1,13 +1,3 @@
-
-export enum Routes {
-    CREATE = 'create',
-}
-
-export enum Commands {
-    CREATE_ORDER = 'createOrder',
-    ORDER_RECEIVED_BY_RESTAURANT = 'orderReceivedByRestaurant'
-}
-
 export enum OrderStatuses {
     CREATED = 'CREATED', // created from end user
     RESTAURANT_NOTIFIED = 'RESTAURANT_NOTIFIED', // restaurant is notified for the new order

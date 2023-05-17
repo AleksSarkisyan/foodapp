@@ -2,7 +2,7 @@ import { getToken } from "next-auth/jwt"
 import { httpClientApi } from "../../../services/httpClientApi";
 import { NextApiRequest, NextApiResponse } from "next";
 
-/** Actual order creation */
+/** Get last user order with product details. Update order status */
 export default async function handler(req: NextApiRequest, res: NextApiResponse) {
     const token: any = await getToken({ req })
 

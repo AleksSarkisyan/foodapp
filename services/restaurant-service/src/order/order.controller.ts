@@ -22,4 +22,11 @@ export class OrderController {
     return this.orderService.getLastUserOrder(getLastUserOrderDto);
   }
 
+  @MessagePattern({ cmd: 'updateOrderStatus' })
+  updateOrderStatus(@Payload() updateOrderStatusDto: { orderId: number, status: string }) {
+    return this.orderService.updateOrderStatus(updateOrderStatusDto);
+  }
+
+
+
 }

@@ -138,6 +138,11 @@ export class OrderService {
         LIMIT 1;
     `, { type: QueryTypes.SELECT });
 
+
+    if (!orderArray[0]) {
+      return this.errorMessage('User has no active orders.');
+    }
+
     let order = orderArray[0]
 
     let orderDetails = null;
@@ -151,6 +156,19 @@ export class OrderService {
       orderDetails,
       restaurantId: order.restaurantId
     }
+  }
+
+  async updateOrderStatus(updateOrderStatusDto: { orderId: number, status: string }) {
+    const { orderId: id, status } = updateOrderStatusDto;
+
+    return await this.orderModel.update(
+      { status },
+      {
+        where: {
+          id
+        }
+      }
+    );
   }
 
   errorMessage(message: string) {

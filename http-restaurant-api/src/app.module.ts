@@ -11,6 +11,6 @@ import { MenuProductModule } from './menu-product/menu-product.module';
 @Module({
   imports: [RestaurantModule, UserModule, MenuModule, CategoryModule, ProductModule, MenuProductModule],
   controllers: [AppController],
-  providers: [AppService],
+  providers: [AppService]
 })
 export class AppModule { }
