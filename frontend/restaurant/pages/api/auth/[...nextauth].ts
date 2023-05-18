@@ -19,7 +19,7 @@ const authOptions: NextAuthOptions = {
         };
 
         const body = JSON.stringify({
-          email: 'webi.aleks2@gmail.com',
+          email,
           password: 'test123'
         });
         const headers = {

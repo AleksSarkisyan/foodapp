@@ -9,7 +9,8 @@ let socket: any;
 const Restaurant: NextPage = (): JSX.Element => {
     const router = useRouter()
     const { id } = router.query;
-    const [message, setMessage] = useState({ message: null, order: { totalQuantity: null, totalPrice: null, id: 0 } });
+    const [order, setOrder] = useState({ message: null, order: { total_quantity: null, total_price: null, id: 0, userEmail: null, restaurantId: null, restaurantName: null, created_at: null, status: null } });
+    let [orderConfirmed, setOrderConfirmed] = useState(false);
 
     useEffect(() => {
         socket = io(`${process.env.NEXT_PUBLIC_WS_URL}`);
@@ -22,22 +23,41 @@ const Restaurant: NextPage = (): JSX.Element => {
                 console.log('got order', message)
 
                 if (message.order.restaurantId == id) {
-                    setMessage({ message: message.message, order: message.order })
+                    setOrder({ message: message.message, order: message.order })
                 }
             })
         });
     }, []);
 
     const confirmOrder = (orderNumber: number) => {
-        socket.emit("orderConfirmed", JSON.stringify({ message: 'orderConfirmed', orderNumber }));
+        console.log('order is', order)
+        socket.emit("orderConfirmed", JSON.stringify({ message: 'orderConfirmed', orderNumber, userEmail: order.order.userEmail }));
+        setOrderConfirmed(true)
     }
     return <div>
-
-        {message.message && (<div>
-            <p>New order received:</p>
-            <div onClick={() => confirmOrder(message.order.id)}>{message.message} - Click to confirm</div>
-            {/* <p>Total quantity: {message.order.totalQuantity}</p>
-            <p>Total price: {message.order.totalPrice}</p> */}
+        {order.message && !orderConfirmed && (<div>
+            <table>
+                <tr>
+                    <th>Restaurant ID:</th>
+                    <th>Restaurant Name:</th>
+                    <th>Order ID:</th>
+                    <th>Status:</th>
+                    <th>Total Quantity:</th>
+                    <th>Total Price:</th>
+                    <th>Created:</th>
+                    <th>Actions:</th>
+                </tr>
+                <tr>
+                    <td>{order.order.restaurantId}</td>
+                    <td>{order.order.restaurantName}</td>
+                    <td>{order.order.id}</td>
+                    <td>{order.order.status}</td>
+                    <td>{order.order.total_quantity}</td>
+                    <td>{order.order.total_price}</td>
+                    <td>{order.order.created_at}</td>
+                    <td onClick={() => confirmOrder(order.order.id)}>Confirm</td>
+                </tr>
+            </table>
         </div>)}
     </div>
 }

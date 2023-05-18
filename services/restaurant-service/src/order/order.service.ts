@@ -130,15 +130,18 @@ export class OrderService {
     let orderArray: any = await Order.sequelize.query(`
       SELECT 
         orders.*,
-        restaurants.id as restaurantId, restaurants.name as restaurantName
+        restaurants.id as restaurantId, restaurants.name as restaurantName,
+        user_service.users.id as userId, users.email as userEmail
       FROM orders
         JOIN restaurants ON restaurants.id = orders.restaurant_id
+        JOIN user_service.users ON user_service.users.id = orders.user_id
         WHERE orders.user_id = ${getLastUserOrderDto.userId} AND orders.status = '${orderStatuses.CREATED}'
         ORDER BY orders.created_at DESC
         LIMIT 1;
     `, { type: QueryTypes.SELECT });
 
 
+    console.log('orderArray is', orderArray)
     if (!orderArray[0]) {
       return this.errorMessage('User has no active orders.');
     }

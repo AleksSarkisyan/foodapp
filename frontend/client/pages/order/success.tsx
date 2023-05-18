@@ -1,23 +1,27 @@
 import type { GetServerSideProps, NextPage } from "next";
 import { useEffect, useState } from "react";
-import { getSession } from "next-auth/react";
+import { getSession, useSession } from "next-auth/react";
 import io from "socket.io-client";
 
 let socket: any;
 const Success: NextPage<any> = ({ restaurantNotified, restaurantName }): JSX.Element => {
 
   const [orderConfirmed, setOrderConfirmed] = useState({ orderNumber: null });
+  const { data: session } = useSession();
 
   useEffect(() => {
     socket = io(`${process.env.NEXT_PUBLIC_WS_URL}`);
 
     socket.on("connect", () => {
       socket.on("orderConfirmed", (message: any) => {
-        let result = JSON.parse(message)
-        setOrderConfirmed({ orderNumber: result.orderNumber })
+        let orderConfirmation = JSON.parse(message)
+        console.log('got result', orderConfirmation)
+        if (session?.user?.email === orderConfirmation.userEmail) {
+          setOrderConfirmed({ orderNumber: orderConfirmation.orderNumber })
+        }
       });
     });
-  }, []);
+  }, [session]);
 
   return <div>
     Order success page
@@ -47,8 +51,6 @@ export const getServerSideProps: GetServerSideProps = async ({ params, req, res 
 
   let notifyRestaurant = await fetch(`${process.env.NEXT_API_URL}order/notify-restaurant`, req as any)
   let notifyRestaurantResult = await notifyRestaurant.json();
-
-  console.log('notifyRestaurantResult is', notifyRestaurantResult)
 
   let restaurantNotified = false;
   let restaurantName = null;
