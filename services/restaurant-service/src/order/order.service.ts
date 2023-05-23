@@ -140,8 +140,6 @@ export class OrderService {
         LIMIT 1;
     `, { type: QueryTypes.SELECT });
 
-
-    console.log('orderArray is', orderArray)
     if (!orderArray[0]) {
       return this.errorMessage('User has no active orders.');
     }

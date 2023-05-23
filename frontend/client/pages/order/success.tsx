@@ -15,7 +15,7 @@ const Success: NextPage<any> = ({ restaurantNotified, restaurantName }): JSX.Ele
     socket.on("connect", () => {
       socket.on("orderConfirmed", (message: any) => {
         let orderConfirmation = JSON.parse(message)
-        console.log('got result', orderConfirmation)
+
         if (session?.user?.email === orderConfirmation.userEmail) {
           setOrderConfirmed({ orderNumber: orderConfirmation.orderNumber })
         }

@@ -20,7 +20,6 @@ const Restaurant: NextPage = (): JSX.Element => {
 
             socket.on('orderCreated', (msg: any) => {
                 let message = JSON.parse(msg);
-                console.log('got order', message)
 
                 if (message.order.restaurantId == id) {
                     setOrder({ message: message.message, order: message.order })
@@ -30,7 +29,6 @@ const Restaurant: NextPage = (): JSX.Element => {
     }, []);
 
     const confirmOrder = (orderNumber: number) => {
-        console.log('order is', order)
         socket.emit("orderConfirmed", JSON.stringify({ message: 'orderConfirmed', orderNumber, userEmail: order.order.userEmail }));
         setOrderConfirmed(true)
     }

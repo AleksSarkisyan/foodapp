@@ -47,7 +47,6 @@ const Restaurant: NextPage<NextRestaurantPageProps> = ({ categoryProducts, error
         let createOrder = await fetch(`${process.env.NEXT_PUBLIC_API_URL}order/create`, { body, method: 'POST' })
         let createOrderResult = await createOrder.json();
 
-        console.log('createOrderResult is', createOrderResult)
         let { stripeRedirectUrl } = createOrderResult
 
         if (stripeRedirectUrl) {

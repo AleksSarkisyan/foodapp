@@ -29,11 +29,6 @@ export class OrderGateway {
   @SubscribeMessage(Enums.Order.Commands.ORDER_RECEIVED_BY_RESTAURANT)
   create(@MessageBody() payload: any) {
     console.log('order created - ', payload);
-
-    //Broadcast message to all connected clients
-    this.server.emit('onMessage', {
-      message: 'Received message is' + payload
-    })
   }
 
   @SubscribeMessage('orderConfirmed')
