@@ -1,17 +1,27 @@
-import { Injectable } from '@nestjs/common';
+import { Inject, Injectable } from '@nestjs/common';
 import { RpcException } from '@nestjs/microservices';
 import { JwtService } from '@nestjs/jwt';
 import { InjectModel } from '@nestjs/sequelize';
 import { User } from './entities/user.entity';
 import { Enums, Types } from '@asarkisyan/nestjs-foodapp-shared';
+import { ConfigService } from '@nestjs/config';
+import { CACHE_MANAGER } from '@nestjs/cache-manager';
+import {Cache} from 'cache-manager';
+import { randomUUID } from 'crypto';
 
 @Injectable()
 export class UserService {
+  private authSecret: string;
+
   constructor(
+    @Inject(CACHE_MANAGER) private cacheManager: Cache,
     @InjectModel(User)
     private userModel: typeof User,
     private readonly jwtService: JwtService,
-  ) { }
+    private configService: ConfigService,
+  ) {
+    this.authSecret = this.configService.get('AUTH_SECRET', 'default');
+   }
   async create(createUserDto: Types.User.CreateUserDto) {
     try {
       const { name, email, password } = createUserDto;
@@ -29,20 +39,35 @@ export class UserService {
     }
   }
 
-  async login(user: Types.User.LoginUser) {
+  async login(user: Types.User.LoginUser, userData: { name: string }) {
     const payload = { user, sub: user.email };
+    
+    const accessToken = this.jwtService.sign(payload);
 
-    if (!this.jwtService.sign(payload)) {
+    if (!accessToken) {
       throw new RpcException(Enums.User.Messages.TOKEN_VALIDATION_ERROR);
     }
 
+    delete user.password;
+
+    const { email } = { ...user };
+
+    /** Generate opaque/reference token with no meaning and tie it to the jwt access token */
+    const opaqueToken = randomUUID();
+    const ttl = 600000;
+    
+    await this.cacheManager.set(email, opaqueToken, ttl);
+    await this.cacheManager.set(opaqueToken, accessToken, ttl);
+    
     return {
-      email: user.email,
-      accessToken: this.jwtService.sign(payload)
+      opaqueToken,
+      email
     };
   }
 
-  validateToken(jwt: string) {
+  async validateToken(opaqueToken: string) {
+    let jwt: string = await this.cacheManager.get(opaqueToken);
+    
     return this.jwtService.verify(jwt);
   }
 
@@ -62,10 +87,9 @@ export class UserService {
     });
   }
 
-  async getUserFromToken(token: string) {
-    let tokenData = this.jwtService.decode(token);
-    let userData = tokenData['user'];
-    let email = userData.email;
+  async getUserFromToken(opaqueToken: string) {
+    let userData = await this.validateToken(opaqueToken)
+    let email = userData.user.email;
 
     return this.findByEmail(email);
   }

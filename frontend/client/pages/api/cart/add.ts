@@ -10,7 +10,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
         return res.status(403).json({ error: true, message: 'Missing token.' })
     }
 
-    const email: string = token?.user.user.email;
+    const email: string = token?.user.email;
     let cacheKey = `cart_user_${email}`;
 
     const addToCartParams: AddToCartParams = JSON.parse(req.body);

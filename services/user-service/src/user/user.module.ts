@@ -6,6 +6,8 @@ import { LocalStrategy } from './strategies/local.strategy';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { SequelizeModule } from '@nestjs/sequelize';
 import { User } from './entities/user.entity';
+import { RedisModule } from '../redis/redis.module';
+
 
 @Module({
   controllers: [
@@ -22,9 +24,10 @@ import { User } from './entities/user.entity';
         signOptions: { expiresIn: '900s' }
       }),
       inject: [ConfigService],
-    })
+    }),
+    RedisModule
   ],
-  providers: [UserService, LocalStrategy],
+  providers: [UserService, LocalStrategy, ConfigService],
 })
 
 export class UserModule implements NestModule {

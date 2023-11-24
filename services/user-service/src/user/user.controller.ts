@@ -27,25 +27,21 @@ export class UserController {
         password
       }
 
-      let token = await this.userService.login(tokenData);
+      let userData = {
+        name
+      }
+
+      let { opaqueToken } = await this.userService.login(tokenData, userData);
 
       return {
-        user: {
-          name,
-          email,
-          token
-        },
-        token,
+        opaqueToken,
+        email,
         error: null
       };
     }
 
     return {
-      user: {
-        name,
-        email
-      },
-      error: Enums.User.Messages.TOKEN_ERROR
+      error: Enums.User.Messages.LOGIN_ERROR
     }
   }
 
@@ -55,16 +51,16 @@ export class UserController {
   async login(@Payload() loginUserDto: Types.User.LoginUser) {
     let user = await this.localStrategy.validate(loginUserDto.email, loginUserDto.password);
 
-    if (user) {
-      let token = await this.userService.login(loginUserDto);
-      let { email, name } = user;
+    let userData = {
+      name: user.name
+    }
 
+    if (user) {
+      let { opaqueToken, email } = await this.userService.login(loginUserDto, userData);
+    
       return {
-        user: {
-          name,
-          email
-        },
-        token,
+        opaqueToken,
+        email,
         error: null
       };
     }

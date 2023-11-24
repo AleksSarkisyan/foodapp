@@ -10,7 +10,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
   }
 
   const redis = createRedisInstance();
-  const email: string = token?.user.user.email;
+  const email: string = token?.user.email;
   let cacheKey = `cart_user_${email}`;
 
   let userCartExists = await redis.exists(cacheKey);

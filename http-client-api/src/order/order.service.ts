@@ -32,7 +32,6 @@ export class OrderService {
     4.2 Create session and return stripe redirect url [ OK ]
   */
   async create(createOrderDto: Types.Order.CreateOrderDto) {
-
     /** WS testing */
     // this.orderGateway.server.emit(Enums.Restaurant.Websocket.ORDER_CREATED, JSON.stringify({ message: 'Order created!', order: createOrderDto }))
     // return {
@@ -44,7 +43,6 @@ export class OrderService {
 
     /** 1 */
     let productOrderDetailsResult: Types.OrderProduct.OrderProductDetails = await this.getProductOrderDetails(createOrderDto);
-
     if (!productOrderDetailsResult.availableProducts.length) {
       return {
         success: false,
@@ -116,8 +114,8 @@ export class OrderService {
 
   async getUserFromToken(createOrderDto: Types.Order.CreateOrderDto | { token: string }) {
     let userToken = this.userClient.send({ cmd: Enums.User.Commands.GET_USER_FROM_TOKEN }, { token: createOrderDto.token });
+    
     let user: Types.User.User = await firstValueFrom(userToken);
-
     return user.id;
   }
 

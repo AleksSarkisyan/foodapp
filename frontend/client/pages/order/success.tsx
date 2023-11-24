@@ -49,7 +49,7 @@ export const getServerSideProps: GetServerSideProps = async ({ params, req, res 
     }
   }
 
-  let notifyRestaurant = await fetch(`${process.env.NEXT_API_URL}order/notify-restaurant`, req as any)
+  let notifyRestaurant = await fetch(`${process.env.NEXT_API_URL}private/order/notify-restaurant`, req as any)
   let notifyRestaurantResult = await notifyRestaurant.json();
 
   let restaurantNotified = false;

@@ -1,16 +1,14 @@
-import { getToken } from "next-auth/jwt"
-import { httpClientApi } from "../../../services/httpClientApi";
-import { createRedisInstance } from "../../../services/redis";
+import { httpClientApi } from "../../../../services/httpClientApi";
+import { createRedisInstance } from "../../../../services/redis";
 import { NextApiRequest, NextApiResponse } from "next";
-import { AddToCartParams } from "../../../types/cart";
+import { AddToCartParams } from "../../../../types/cart";
+import { verifyToken } from "../../../../services/verifyToken";
+import { VerifyTokenResult } from '../../../../types/user';
 
 /** Actual order creation */
 export default async function handler(req: NextApiRequest, res: NextApiResponse) {
-    const token: any = await getToken({ req })
-
-    if (!token) {
-        return res.status(403).json({ error: true, message: 'Missing token.' })
-    }
+    const { cachedOpaqueToken, email } = await verifyToken(req, res) as VerifyTokenResult;
+    const redis = createRedisInstance();
 
     const parsedBody = JSON.parse(req.body);
     const { restaurantId } = parsedBody
@@ -19,9 +17,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
         return res.status(404).json({ error: true, message: 'Missing restaurantId' })
     }
 
-    const accessToken = token.user.token.accessToken;
-    const email: string = token?.user.user.email;
-    const redis = createRedisInstance();
+    //return res.status(201).json({ result: 'OK' });
     let cacheKey = `cart_user_${email}`;
 
     let userCartExists = await redis.exists(cacheKey);
@@ -42,7 +38,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
 
     let apiResult = await httpClientApi({
         method: 'POST',
-        token: accessToken,
+        token: cachedOpaqueToken,
         path: 'order/create',
         params: createOrderParams
     })

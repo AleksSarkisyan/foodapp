@@ -5,7 +5,7 @@ import CredentialsProvider from "next-auth/providers/credentials";
 const authOptions: NextAuthOptions = {
   session: {
     strategy: "jwt",
-    maxAge: 600
+    maxAge: 600 // seconds
   },
   useSecureCookies: false,
   providers: [
@@ -20,7 +20,7 @@ const authOptions: NextAuthOptions = {
         };
 
         const body = JSON.stringify({
-          email,
+          email: 'webi.aleks@gmail.com',
           password: 'test123'
         });
         const headers = {
@@ -48,8 +48,7 @@ const authOptions: NextAuthOptions = {
       user && (token.user = user)
       return token
     },
-    session({ session, user, token }: any) {
-      session.user = token.user.user;
+    async session({ session, user, token }: any) {
       return session
     },
   },
