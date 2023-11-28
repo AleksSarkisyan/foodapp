@@ -1,18 +1,18 @@
-import { getToken } from "next-auth/jwt"
 import { NextApiRequest, NextApiResponse } from "next";
-import { createRedisInstance } from "../../../services/redis";
+import { createRedisInstance } from "@/services/redis";
+import { verifyToken } from "@/services/verifyToken";
+import { VerifyTokenResult } from '@/types/user';
 
 export default async function handler(req: NextApiRequest, res: NextApiResponse) {
-  const token: any = await getToken({ req });
-
-  if (!token) {
-    return res.status(403).json({ error: true, message: 'Missing token.' })
+  const { email, error } = await verifyToken(req, res) as VerifyTokenResult;
+        
+  if (error?.code) {
+    return res.status(error.code).json({ error: true, message: error.message })
   }
 
   const redis = createRedisInstance();
-  const email: string = token?.user.email;
-  let cacheKey = `cart_user_${email}`;
 
+  let cacheKey = `cart_user_${email}`;
   let userCartExists = await redis.exists(cacheKey);
 
   if (userCartExists) {

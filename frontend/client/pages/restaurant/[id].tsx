@@ -1,19 +1,21 @@
 import type { GetServerSideProps, NextPage } from "next";
 import { useEffect, useContext } from "react";
-import { getSession } from "next-auth/react";
-import { CategoryProducts, Products } from "../../types/category-products";
-import { NextRestaurantPageProps } from "../../types/restaurant";
-import { RestaurantQueryParams } from "../../types/restaurant";
-import { AddToCartParams } from "../../types/cart";
+import { getSession, useSession } from "next-auth/react";
+import { CategoryProducts, Products } from "@/types/category-products";
+import { NextRestaurantPageProps } from "@/types/restaurant";
+import { RestaurantQueryParams } from "@/types/restaurant";
+import { AddToCartParams } from "@/types/cart";
 import { ModalContext } from "../../context/modalConext";
 import { Cart } from "../../components/cart/cart";
 import { useRouter } from "next/router";
+import { NextApiPaths } from '@/types/paths';
 
 const Restaurant: NextPage<NextRestaurantPageProps> = ({ categoryProducts, error }): JSX.Element => {
 
     let { handleModal, modal }: any = useContext(ModalContext);
     const router = useRouter()
     const { id: restaurantId } = router.query;
+    const { data: session } = useSession();
 
     useEffect(() => {
         if (!modal) {
@@ -34,17 +36,31 @@ const Restaurant: NextPage<NextRestaurantPageProps> = ({ categoryProducts, error
     }, []);
 
     const clearCart = async () => {
-        let clear = await fetch(`${process.env.NEXT_PUBLIC_API_URL}cart/clear`);
-        await clear.json();
+        if (!session) {
+            return;
+        }
+
+        let clear = await fetch(getUrl(NextApiPaths.REMOVE_CART));
+        let clearResult = await clear.json();
+
+        if (clearResult.error) {
+            console.log('clear cart failed -', clearResult.message)
+            return;
+        }
+
         handleModal();
     }
 
     const createOrder = async () => {
+        if (!session) {
+            return;
+        }
+
         let body = JSON.stringify({
             restaurantId
         });
 
-        let createOrder = await fetch(`${process.env.NEXT_PUBLIC_API_URL}private/order/create`, { body, method: 'POST' })
+        let createOrder = await fetch(getUrl(NextApiPaths.CREATE_ORDER), { body, method: 'POST' })
         let createOrderResult = await createOrder.json();
 
         let { stripeRedirectUrl } = createOrderResult
@@ -55,6 +71,10 @@ const Restaurant: NextPage<NextRestaurantPageProps> = ({ categoryProducts, error
     }
 
     const addToCart = async ({ productId, quantity, price, name, weight }: AddToCartParams) => {
+        if (!session) {
+            return;
+        }
+
         let body = JSON.stringify({
             productId,
             quantity,
@@ -63,10 +83,19 @@ const Restaurant: NextPage<NextRestaurantPageProps> = ({ categoryProducts, error
             weight
         });
 
-        let addToCart = await fetch(`${process.env.NEXT_PUBLIC_API_URL}cart/add`, { body, method: 'POST' })
+        let addToCart = await fetch(getUrl(NextApiPaths.ADD_TO_CART), { body, method: 'POST' })
         let addToCartResult = await addToCart.json();
 
+        if (addToCartResult.error) {
+            console.log('add to cart failed -', addToCartResult.message)
+            return;
+        }
+
         handleModal(<Cart products={JSON.parse(addToCartResult.products)} createOrder={() => createOrder()} />)
+    }
+
+    const getUrl = (path: NextApiPaths) => {
+        return `${process.env.NEXT_PUBLIC_API_URL}${path}`;
     }
 
     return <div>

@@ -28,7 +28,7 @@ const Home: NextPage = () => {
     let body = JSON.stringify({
       location: address.location
     })
-
+    
     let searchRestaurants = await fetch(`${process.env.NEXT_PUBLIC_API_URL}searchRestaurants`, { body, method: 'POST' })
     let searchRestaurantsResult = await searchRestaurants.json();
 
@@ -58,7 +58,6 @@ const Home: NextPage = () => {
 
       <main className={styles.main}>
         <div>Hello {session?.user?.name}</div>
-        <button type="button" onClick={() => Router.push('/order')}>Create test order </button>
 
         <div className="restaurant-search-form">
           <form onSubmit={searchRestaurants}>

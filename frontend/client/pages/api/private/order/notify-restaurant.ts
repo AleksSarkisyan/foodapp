@@ -1,11 +1,15 @@
-import { httpClientApi } from "../../../../services/httpClientApi";
+import { httpClientApi } from "@/services/httpClientApi";
 import { NextApiRequest, NextApiResponse } from "next";
-import { verifyToken } from "../../../../services/verifyToken";
-import { VerifyTokenResult } from '../../../../types/user';
+import { verifyToken } from "@/services/verifyToken";
+import { VerifyTokenResult } from '@/types/user';
 
 /** Get last user order with product details. Update order status */
 export default async function handler(req: NextApiRequest, res: NextApiResponse) {
-    const { cachedOpaqueToken } = await verifyToken(req, res) as VerifyTokenResult;
+    const { cachedOpaqueToken, error } = await verifyToken(req, res) as VerifyTokenResult;
+
+    if (error?.code) {
+        return res.status(error.code).json({ error: true, message: error.message })
+    }
 
     let apiResult = await httpClientApi({
         method: 'POST',
