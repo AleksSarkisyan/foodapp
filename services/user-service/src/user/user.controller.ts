@@ -36,6 +36,7 @@ export class UserController {
       return {
         opaqueToken,
         email,
+        name,
         error: null
       };
     }
@@ -61,6 +62,7 @@ export class UserController {
       return {
         opaqueToken,
         email,
+        name: user.name,
         error: null
       };
     }
@@ -89,6 +91,19 @@ export class UserController {
   async getUserFromToken(data: Types.User.GetUserFromToken) {
     try {
       return this.userService.getUserFromToken(data.token);
+    } catch (e) {
+      console.log(Enums.User.Messages.TOKEN_VALIDATION_ERROR, e);
+      Logger.log(e);
+      return false;
+    }
+  }
+
+  @UseFilters(new Filters.ExceptionFilter())
+  @MessagePattern({ cmd: 'refreshToken' })
+  async refreshToken( refreshTokenDto: { refreshToken: string, email: string}) {
+    try {
+      console.log('refreshTokenDto-', refreshTokenDto)
+      return this.userService.refreshToken(refreshTokenDto);
     } catch (e) {
       console.log(Enums.User.Messages.TOKEN_VALIDATION_ERROR, e);
       Logger.log(e);

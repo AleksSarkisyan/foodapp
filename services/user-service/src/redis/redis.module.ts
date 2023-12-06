@@ -12,7 +12,8 @@ import { CacheModule, CacheModuleOptions } from '@nestjs/cache-manager';
         host: process.env.REDIS_HOST ?? 'localhost',
         port: parseInt(process.env.REDIS_PORT ?? '6379'),
       },
-      ttl: 600000 // 10 minutes in miliseconds
+      //ttl: 600000 // 10 minutes in miliseconds
+      ttl: 30000 // for testing refresh token
     }),
   ],
 })

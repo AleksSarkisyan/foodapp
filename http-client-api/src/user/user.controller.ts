@@ -26,9 +26,14 @@ export class UserController {
     }
   }
 
-  @UseGuards(UserAuthorizedGuard(Enums.User.Generic.SERVICE_NAME))
-  @Get('greet')
-  async greet(): Promise<string> {
-    return 'Auth works...';
+  @Post('/refresh')
+  async refresh(@Body() refreshTokenDto: { refreshToken: string, email: string}) {
+    try {
+      return await this.userService.refreshToken(refreshTokenDto);
+    } catch (error) {
+      console.log('error is', error)
+      return error;
+    }
   }
+  
 }

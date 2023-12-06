@@ -8,9 +8,9 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     try {
         const { email, error } = await verifyToken(req, res) as VerifyTokenResult;
         
-        if (error?.code) {
-            return res.status(error.code).json({ error: true, message: error.message })
-        }
+        if (error?.code && error?.message) {
+            return res.status(error.code).json({ error: true, message: error.message })   
+        } 
 
         let cacheKey = `cart_user_${email}`;
 

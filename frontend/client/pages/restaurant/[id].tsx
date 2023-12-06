@@ -9,13 +9,14 @@ import { ModalContext } from "../../context/modalConext";
 import { Cart } from "../../components/cart/cart";
 import { useRouter } from "next/router";
 import { NextApiPaths } from '@/types/paths';
+import { VerifyTokenErrors } from '@/types/user';
 
 const Restaurant: NextPage<NextRestaurantPageProps> = ({ categoryProducts, error }): JSX.Element => {
 
     let { handleModal, modal }: any = useContext(ModalContext);
     const router = useRouter()
     const { id: restaurantId } = router.query;
-    const { data: session } = useSession();
+    const { data: session, update } = useSession();
 
     useEffect(() => {
         if (!modal) {
@@ -44,7 +45,6 @@ const Restaurant: NextPage<NextRestaurantPageProps> = ({ categoryProducts, error
         let clearResult = await clear.json();
 
         if (clearResult.error) {
-            console.log('clear cart failed -', clearResult.message)
             return;
         }
 
@@ -85,13 +85,24 @@ const Restaurant: NextPage<NextRestaurantPageProps> = ({ categoryProducts, error
 
         let addToCart = await fetch(getUrl(NextApiPaths.ADD_TO_CART), { body, method: 'POST' })
         let addToCartResult = await addToCart.json();
+        if (addToCartResult.error && addToCartResult.message) {
 
-        if (addToCartResult.error) {
-            console.log('add to cart failed -', addToCartResult.message)
-            return;
-        }
+            if (addToCartResult.message == VerifyTokenErrors.SESSION_EXPIRED) {
+                /* JWT & session need to be refreshed from client 
+                * https://next-auth.js.org/getting-started/client#updating-the-session 
+                * Will need a better way to re-fetch those session expired requests
+                */
+                await update()
+                addToCart = await fetch(getUrl(NextApiPaths.ADD_TO_CART), { body, method: 'POST' })
+                addToCartResult = await addToCart.json();
+                
+                return handleModal(<Cart products={JSON.parse(addToCartResult.products)} createOrder={() => createOrder()} />)
+            }
 
-        handleModal(<Cart products={JSON.parse(addToCartResult.products)} createOrder={() => createOrder()} />)
+            return addToCartResult;
+        } 
+        
+        return handleModal(<Cart products={JSON.parse(addToCartResult.products)} createOrder={() => createOrder()} />)
     }
 
     const getUrl = (path: NextApiPaths) => {

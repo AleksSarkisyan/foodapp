@@ -18,4 +18,10 @@ export class UserService {
 
     return await firstValueFrom(message);
   }
+
+  async refreshToken(refreshTokenDto: { refreshToken: string, email: string}) {
+    let message = this.client.send({ cmd: 'refreshToken' }, refreshTokenDto);
+
+    return await firstValueFrom(message);
+  }
 }

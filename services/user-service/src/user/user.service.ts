@@ -54,10 +54,18 @@ export class UserService {
 
     /** Generate opaque/reference token with no meaning and tie it to the jwt access token */
     const opaqueToken = randomUUID();
-    const ttl = 600000;
+    // const ttl = 600000;
+    const ttl = 30000; // for testing refresh token
     
     await this.cacheManager.set(email, opaqueToken, ttl);
     await this.cacheManager.set(opaqueToken, accessToken, ttl);
+
+    const refreshToken = randomUUID();
+    const refreshTokenTtl = 86400000; // 24 hours
+    const refreshTokenKey = user.email + this.authSecret;
+
+    await this.cacheManager.set(refreshTokenKey, refreshToken, refreshTokenTtl);
+    await this.cacheManager.set(refreshToken, email, refreshTokenTtl);
     
     return {
       opaqueToken,
@@ -92,5 +100,21 @@ export class UserService {
     let email = userData.user.email;
 
     return this.findByEmail(email);
+  }
+
+  async refreshToken(refreshTokenDto: { refreshToken: string, email: string}) {
+    const email = refreshTokenDto.email;
+    const user = await this.findByEmail(email)
+
+    const loginData = {
+      email,
+      password: user.password
+    }
+
+    let userData = {
+      name: user.name
+    }
+
+    return await this.login(loginData, userData);
   }
 }
