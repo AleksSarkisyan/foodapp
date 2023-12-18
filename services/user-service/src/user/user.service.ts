@@ -54,22 +54,27 @@ export class UserService {
 
     /** Generate opaque/reference token with no meaning and tie it to the jwt access token */
     const opaqueToken = randomUUID();
-    // const ttl = 600000;
-    const ttl = 30000; // for testing refresh token
+    const ttl = 600000; // 10 minutes in millisecods
+    // const ttl = 30000; // for testing refresh token
     
     await this.cacheManager.set(email, opaqueToken, ttl);
     await this.cacheManager.set(opaqueToken, accessToken, ttl);
 
+    /** Generate the refresh token. Create a predefined key, to be used from Next API */
     const refreshToken = randomUUID();
-    const refreshTokenTtl = 86400000; // 24 hours
+    const refreshTokenTtl = 43200000; // 12 hours in millisecods
     const refreshTokenKey = user.email + this.authSecret;
 
     await this.cacheManager.set(refreshTokenKey, refreshToken, refreshTokenTtl);
     await this.cacheManager.set(refreshToken, email, refreshTokenTtl);
+
+    console.log('opaqueToken--', opaqueToken)
+    console.log('refreshToken--', refreshToken)
     
     return {
       opaqueToken,
-      email
+      email,
+      tokenTimestamp: Math.floor(Date.now() / 1000) 
     };
   }
 

@@ -19,8 +19,9 @@ export type Error = {
 }
 
 export type NextRestaurantPageProps = {
-    categoryProducts: CategoryProducts[];
-    error: string;
+    categoryProducts?: CategoryProducts[];
+    error?: string;
+    refresh?: boolean;
 };
 
 export interface RestaurantQueryParams extends ParsedUrlQuery {

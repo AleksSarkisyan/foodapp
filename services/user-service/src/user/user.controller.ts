@@ -31,10 +31,11 @@ export class UserController {
         name
       }
 
-      let { opaqueToken } = await this.userService.login(tokenData, userData);
+      let { opaqueToken, tokenTimestamp } = await this.userService.login(tokenData, userData);
 
       return {
         opaqueToken,
+        tokenTimestamp,
         email,
         name,
         error: null
@@ -57,10 +58,11 @@ export class UserController {
     }
 
     if (user) {
-      let { opaqueToken, email } = await this.userService.login(loginUserDto, userData);
+      let { opaqueToken, email, tokenTimestamp } = await this.userService.login(loginUserDto, userData);
     
       return {
         opaqueToken,
+        tokenTimestamp,
         email,
         name: user.name,
         error: null
@@ -102,7 +104,6 @@ export class UserController {
   @MessagePattern({ cmd: 'refreshToken' })
   async refreshToken( refreshTokenDto: { refreshToken: string, email: string}) {
     try {
-      console.log('refreshTokenDto-', refreshTokenDto)
       return this.userService.refreshToken(refreshTokenDto);
     } catch (e) {
       console.log(Enums.User.Messages.TOKEN_VALIDATION_ERROR, e);

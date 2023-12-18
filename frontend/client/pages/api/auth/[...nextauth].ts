@@ -2,11 +2,11 @@ import NextAuth, { NextAuthOptions } from "next-auth";
 import CredentialsProvider from "next-auth/providers/credentials";
 import { createRedisInstance } from "@/services/redis";
 import { httpClientApi } from "@/services/httpClientApi";
+import { JwtToken } from "@/types/user";
 
 export const authOptions: NextAuthOptions = {
   session: {
     strategy: "jwt",
-    // maxAge: 600 // seconds
     maxAge: 12 * 60 * 60 // 12 hours
   },
   useSecureCookies: false,
@@ -36,7 +36,7 @@ export const authOptions: NextAuthOptions = {
         if (!getTokenResult || getTokenResult.error) {
           throw new Error("invalid credentials");
         }
-
+        
         return getTokenResult;
       }
     }),
@@ -47,14 +47,16 @@ export const authOptions: NextAuthOptions = {
   },
   callbacks: {
     async jwt({ token, user, account, profile, trigger }) {
-      if (trigger == 'update') {
-        let refreshResult = await refreshAccessToken({token})
-
-        token.user = {
-          ...refreshResult
+      if (token.user) {
+        if ( shouldRefreshToken(token as JwtToken)) {
+          let refreshResult = await refreshAccessToken({token})
+  
+          token.user = {
+            ...refreshResult
+          }
+          console.log('jwt token is', token)
+          return token;
         }
-        
-        return token;
       }
 
       user && (token.user = user);
@@ -62,19 +64,32 @@ export const authOptions: NextAuthOptions = {
       return token
     },
     async session({ session, user, token }: any) {
+      session.user.opaqueToken = token.user.opaqueToken;
+     
       return session
     },
   },
   events: {
     async signOut(message) { 
-      console.log('signout--', message)
+      //console.log('signout--', message)
     },
     async session(message) { 
-      console.log('session message--', message)
+      //console.log('session message--', message)
     },
   },
   debug: process.env.NODE_ENV === 'development',
 };
+
+/** Ttl must match Redis ttl  */
+function shouldRefreshToken(token: JwtToken) {
+  let currentTimestamp = Math.floor(Date.now() / 1000)
+  let user = token.user;
+  let diff = currentTimestamp - user.tokenTimestamp;
+  const maxTokenTtl = 600; // 10 minutes in seconds
+  console.log('diff is', diff)
+
+  return diff >= maxTokenTtl;
+}
 
 async function refreshAccessToken({token}: any) {
   const { email, opaqueToken } = token.user

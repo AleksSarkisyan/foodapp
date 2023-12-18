@@ -1,19 +1,18 @@
-import { getToken } from "next-auth/jwt";
 import { NextApiRequest, NextApiResponse } from "next";
 import { createRedisInstance } from "./redis";
-import { VerifyTokenResult, NextJWT, VerifyTokenErrors } from '@/types/user';
+import { VerifyTokenErrors } from '@/types/user';
 import { getServerSession } from "next-auth";
 import { authOptions } from "@/pages/api/auth/[...nextauth]";
+import type { GetServerSidePropsContext } from 'next';
 
-export const verifyToken = async ( req: NextApiRequest, res: NextApiResponse) => {
-    const token = await getToken({ req }) as NextJWT;
+export const verifyToken = async ( req: NextApiRequest | GetServerSidePropsContext['req'], res: NextApiResponse | GetServerSidePropsContext['res']) => {
     const serverSession = await getServerSession(req, res, authOptions);
     
-    if (!token || !serverSession) {
+    if (!serverSession) {
         return getErrorMessage(VerifyTokenErrors.UNAUTHORIZED)
     }
 
-    const { email, opaqueToken }: VerifyTokenResult = token.user;
+    const { email, opaqueToken, tokenTimestamp } = { ...serverSession.user };
     const redis = createRedisInstance();
 
     let opaqueTokenExists = await redis.exists(email as string);
@@ -34,13 +33,15 @@ export const verifyToken = async ( req: NextApiRequest, res: NextApiResponse) =>
     }
 
     if (cachedOpaqueToken !== opaqueToken) {
-        // to do - delete tokens
+        await redis.del(email as string)
+        await redis.del(cachedOpaqueToken as string)
         return getErrorMessage(VerifyTokenErrors.TOKEN_MISMATCH)
     }
 
     return {
         cachedOpaqueToken,
-        email
+        email,
+        tokenTimestamp
     };
 }
 

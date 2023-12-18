@@ -20,3 +20,13 @@ export enum VerifyTokenErrors {
     TOKEN_MISMATCH = 'Token mismatch.',
     SESSION_EXPIRED = 'Session expired'
 }
+
+export type JwtToken = {
+    name: string;
+    email: string;
+    user: {
+        opaqueToken: string;
+        email: string;
+        tokenTimestamp: number;
+    }
+}

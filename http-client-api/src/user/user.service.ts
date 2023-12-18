@@ -22,6 +22,10 @@ export class UserService {
   async refreshToken(refreshTokenDto: { refreshToken: string, email: string}) {
     let message = this.client.send({ cmd: 'refreshToken' }, refreshTokenDto);
 
-    return await firstValueFrom(message);
+    let refreshTokenResult = await firstValueFrom(message);
+
+    console.log('refreshTokenResult is', refreshTokenResult)
+
+    return refreshTokenResult;
   }
 }

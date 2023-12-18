@@ -1,6 +1,6 @@
 import type { GetServerSideProps, NextPage } from "next";
 import { useEffect, useContext } from "react";
-import { getSession, useSession } from "next-auth/react";
+import { useSession } from "next-auth/react";
 import { CategoryProducts, Products } from "@/types/category-products";
 import { NextRestaurantPageProps } from "@/types/restaurant";
 import { RestaurantQueryParams } from "@/types/restaurant";
@@ -9,10 +9,10 @@ import { ModalContext } from "../../context/modalConext";
 import { Cart } from "../../components/cart/cart";
 import { useRouter } from "next/router";
 import { NextApiPaths } from '@/types/paths';
-import { VerifyTokenErrors } from '@/types/user';
+import { verifyToken } from "@/services/verifyToken";
+import { VerifyTokenResult } from '@/types/user';
 
 const Restaurant: NextPage<NextRestaurantPageProps> = ({ categoryProducts, error }): JSX.Element => {
-
     let { handleModal, modal }: any = useContext(ModalContext);
     const router = useRouter()
     const { id: restaurantId } = router.query;
@@ -36,6 +36,7 @@ const Restaurant: NextPage<NextRestaurantPageProps> = ({ categoryProducts, error
         }
     }, []);
 
+    
     const clearCart = async () => {
         if (!session) {
             return;
@@ -85,22 +86,6 @@ const Restaurant: NextPage<NextRestaurantPageProps> = ({ categoryProducts, error
 
         let addToCart = await fetch(getUrl(NextApiPaths.ADD_TO_CART), { body, method: 'POST' })
         let addToCartResult = await addToCart.json();
-        if (addToCartResult.error && addToCartResult.message) {
-
-            if (addToCartResult.message == VerifyTokenErrors.SESSION_EXPIRED) {
-                /* JWT & session need to be refreshed from client 
-                * https://next-auth.js.org/getting-started/client#updating-the-session 
-                * Will need a better way to re-fetch those session expired requests
-                */
-                await update()
-                addToCart = await fetch(getUrl(NextApiPaths.ADD_TO_CART), { body, method: 'POST' })
-                addToCartResult = await addToCart.json();
-                
-                return handleModal(<Cart products={JSON.parse(addToCartResult.products)} createOrder={() => createOrder()} />)
-            }
-
-            return addToCartResult;
-        } 
         
         return handleModal(<Cart products={JSON.parse(addToCartResult.products)} createOrder={() => createOrder()} />)
     }
@@ -111,7 +96,8 @@ const Restaurant: NextPage<NextRestaurantPageProps> = ({ categoryProducts, error
 
     return <div>
         {error && error}
-        {categoryProducts.length > 0 && <div>
+        <div>Hello {session?.user?.name}</div>
+        {categoryProducts && categoryProducts.length > 0 && <div>
             {categoryProducts.map((categories: CategoryProducts, key: number) => (
                 <div key={'category' + key}>
                     <strong style={{ padding: '0px 10px' }}>{categories.categoryName}</strong>
@@ -142,11 +128,13 @@ const Restaurant: NextPage<NextRestaurantPageProps> = ({ categoryProducts, error
     </div>
 }
 
+/** To do Explore options to move this to a HOC
+ * https://github.com/vercel/next.js/discussions/10925
+ */
 export const getServerSideProps: GetServerSideProps = async ({ params, req, res }) => {
-
-    let session = await getSession({ req });
-
-    if (!session) {
+    const { error } = await verifyToken(req, res) as VerifyTokenResult;
+    
+    if (error) {
         return {
             redirect: {
                 destination: '/auth/signin',
@@ -159,7 +147,7 @@ export const getServerSideProps: GetServerSideProps = async ({ params, req, res 
 
     let categoryProducts = await fetch(`${process.env.NEXT_API_URL}restaurant/${id}`)
     let categoryProductsResult: CategoryProducts[] = await categoryProducts.json();
-
+    
     if (!categoryProductsResult.length) {
         return {
             props: {
