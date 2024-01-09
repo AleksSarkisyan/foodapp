@@ -1,12 +1,11 @@
-import type { NextPage, GetServerSideProps } from "next";
+import type { NextPage } from "next";
 import Head from "next/head";
 import { useSession } from "next-auth/react";
 import styles from "../styles/Home.module.css";
 import Router from "next/router";
 import { FormEventHandler, useState } from "react";
 import { Restaurant } from "../types/restaurant";
-import { verifyToken } from "@/services/verifyToken";
-import { VerifyTokenResult } from '@/types/user';
+import type { GetServerSidePropsContext } from 'next';
 
 const Home: NextPage = () => {
 
@@ -92,18 +91,7 @@ const Home: NextPage = () => {
   );
 };
 
-export const getServerSideProps: GetServerSideProps = async ({ req, res }) => {
-  const { error } = await verifyToken(req, res) as VerifyTokenResult;
-    
-    if (error) {
-      return {
-        redirect: {
-          destination: '/auth/signin',
-          permanent: false
-        }
-      }
-    }
-
+export const getServerSideProps = async (context: GetServerSidePropsContext) => {
   return {
     props: { }
   }

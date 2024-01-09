@@ -27,3 +27,8 @@ export type NextRestaurantPageProps = {
 export interface RestaurantQueryParams extends ParsedUrlQuery {
     id: string;
 }
+
+export type RestaurantNotifiedResult = {
+    restaurantNotified: boolean,
+    restaurantName: string
+}

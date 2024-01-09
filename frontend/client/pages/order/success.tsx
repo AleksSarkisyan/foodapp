@@ -1,7 +1,9 @@
-import type { GetServerSideProps, NextPage } from "next";
+import type { NextPage } from "next";
 import { useEffect, useState } from "react";
-import { getSession, useSession } from "next-auth/react";
+import { useSession } from "next-auth/react";
 import io from "socket.io-client";
+import { getServerSideData } from "@/services/getServerSideData";
+import type { GetServerSidePropsContext } from 'next';
 
 let socket: any;
 const Success: NextPage<any> = ({ restaurantNotified, restaurantName }): JSX.Element => {
@@ -37,36 +39,16 @@ const Success: NextPage<any> = ({ restaurantNotified, restaurantName }): JSX.Ele
   </div>
 }
 
-export const getServerSideProps: GetServerSideProps = async ({ params, req, res }) => {
-  let session = await getSession({ req });
+export const getServerSideProps = async (context: GetServerSidePropsContext) => {
+  const data = await getServerSideData(context, ['notifyRestaurantProps'])
 
-  if (!session) {
-    return {
-      redirect: {
-        destination: '/auth/signin',
-        permanent: false
-      }
-    }
+  if (data[0].hasOwnProperty('redirect')) {
+    return data[0];
   }
-
-  let notifyRestaurant = await fetch(`${process.env.NEXT_API_URL}private/order/notify-restaurant`, req as any)
-  let notifyRestaurantResult = await notifyRestaurant.json();
-
-  let restaurantNotified = false;
-  let restaurantName = null;
-
-  if (notifyRestaurantResult.order.id) {
-    restaurantNotified = true
-    restaurantName = notifyRestaurantResult.order.restaurantName;
-  }
-
+ 
   return {
-    props: {
-      restaurantNotified,
-      restaurantName
-    }
-  }
-
+    props: data[0]
+  };
 }
 
 export default Success;
