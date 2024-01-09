@@ -28,8 +28,8 @@ export async function getServerSideData (context: GetServerSidePropsContext, api
 }
 
 /** Wrapper function that can call different API resources, depending on provided keys */
-const callApis = async(types: string[], context: GetServerSidePropsContext) => {
-    let apiFunctions: { [key: string]: any } = [
+const callApis = async(pageCalls: string[], context: GetServerSidePropsContext) => {
+    let allFunctions: { [key: string]: any } = [
         {'getRestaurantMenuProps': getRestaurantMenuProps(context.params)},
         {'otherProps': otherProps()},
         {'notifyRestaurantProps': notifyRestaurantProps(context)}
@@ -37,10 +37,10 @@ const callApis = async(types: string[], context: GetServerSidePropsContext) => {
     
     let result: CategoryProducts[] | RestaurantNotifiedResult[] | AuthFailed[] = [];
 
-    for await (const [key, apiCall] of Object.entries(apiFunctions)) {
+    for await (const [key, apiCall] of Object.entries(allFunctions)) {
         let functionName = Object.keys(apiCall)[0];
         
-        if (types.includes(functionName)) {
+        if (pageCalls.includes(functionName)) {
             
             /** Makes the actual api call */
             let data = await apiCall[functionName]
