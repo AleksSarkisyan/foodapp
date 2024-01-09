@@ -1,16 +1,15 @@
-import type { GetServerSideProps, NextPage } from "next";
+import type { NextPage } from "next";
 import { useEffect, useContext } from "react";
 import { useSession } from "next-auth/react";
 import { CategoryProducts, Products } from "@/types/category-products";
 import { NextRestaurantPageProps } from "@/types/restaurant";
-import { RestaurantQueryParams } from "@/types/restaurant";
 import { AddToCartParams } from "@/types/cart";
 import { ModalContext } from "../../context/modalConext";
 import { Cart } from "../../components/cart/cart";
 import { useRouter } from "next/router";
 import { NextApiPaths } from '@/types/paths';
-import { verifyToken } from "@/services/verifyToken";
-import { VerifyTokenResult } from '@/types/user';
+import { getServerSideData } from "@/services/getServerSideData";
+import type { GetServerSidePropsContext } from 'next';
 
 const Restaurant: NextPage<NextRestaurantPageProps> = ({ categoryProducts, error }): JSX.Element => {
     let { handleModal, modal }: any = useContext(ModalContext);
@@ -128,40 +127,18 @@ const Restaurant: NextPage<NextRestaurantPageProps> = ({ categoryProducts, error
     </div>
 }
 
-/** To do Explore options to move this to a HOC
- * https://github.com/vercel/next.js/discussions/10925
- */
-export const getServerSideProps: GetServerSideProps = async ({ params, req, res }) => {
-    const { error } = await verifyToken(req, res) as VerifyTokenResult;
-    
-    if (error) {
-        return {
-            redirect: {
-                destination: '/auth/signin',
-                permanent: false
-            }
-        }
+/** May not work well with hot reload while developing */
+export const getServerSideProps = async (context: GetServerSidePropsContext) => {
+    const data = await getServerSideData(context, ['getRestaurantMenuProps', 'otherProps'])
+
+    if (data[0].hasOwnProperty('redirect')) {
+        return data[0];
     }
-
-    const { id } = params as RestaurantQueryParams;
-
-    let categoryProducts = await fetch(`${process.env.NEXT_API_URL}restaurant/${id}`)
-    let categoryProductsResult: CategoryProducts[] = await categoryProducts.json();
-    
-    if (!categoryProductsResult.length) {
-        return {
-            props: {
-                error: 'No products found'
-            }
-        }
-    }
-
+   
     return {
-        props: {
-            categoryProducts: categoryProductsResult
-        }
-    }
-
+        props: data[0]
+    };
 }
+
 
 export default Restaurant;

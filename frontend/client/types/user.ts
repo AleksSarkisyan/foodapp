@@ -30,3 +30,10 @@ export type JwtToken = {
         tokenTimestamp: number;
     }
 }
+
+export type AuthFailed = {
+    redirect: {
+        destination: string,
+        permanent: boolean
+    }
+}
