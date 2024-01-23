@@ -1,0 +1,4 @@
+"id","first_name","last_name","email","password","created_at","updated_at"
+11,Aleks,Sarkisyan,webi.aleks@gmail.com,test123,"2023-02-28 16:10:02","2023-02-28 16:10:02"
+12,Aleks2,Sarkisyan,webi.aleks2@gmail.com,test123,"2023-03-06 15:40:11","2023-03-06 15:40:11"
+13,Aleks3,Sarkisyan3,webi.aleks3@gmail.com,test123,"2023-03-29 20:40:57","2023-03-29 20:40:57"

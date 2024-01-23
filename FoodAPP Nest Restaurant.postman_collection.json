@@ -1,0 +1,411 @@
+{
+	"info": {
+		"_postman_id": "fb8e44d3-c5a7-43b2-b590-c24216439f3d",
+		"name": "FoodAPP Nest Restaurant",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "6258473"
+	},
+	"item": [
+		{
+			"name": "Create Restaurant",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyIjp7ImVtYWlsIjoid2ViaS5hbGVrczJAZ21haWwuY29tIiwicGFzc3dvcmQiOiJ0ZXN0MTIzIn0sInN1YiI6IndlYmkuYWxla3MyQGdtYWlsLmNvbSIsImlhdCI6MTY4MDExMDQ1OSwiZXhwIjoxNjgwMTExMzU5fQ.G3rqlprgqmo0BvoQkhSEJM5rVyBl2xwc40vBkacYUfo",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "urlencoded",
+					"urlencoded": [
+						{
+							"key": "name",
+							"value": "Test Restaurant",
+							"type": "text"
+						},
+						{
+							"key": "city",
+							"value": "Sofia",
+							"type": "text"
+						},
+						{
+							"key": "token",
+							"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyIjp7ImVtYWlsIjoid2ViaS5hbGVrczJAZ21haWwuY29tIiwicGFzc3dvcmQiOiJ0ZXN0MTIzIn0sInN1YiI6IndlYmkuYWxla3MyQGdtYWlsLmNvbSIsImlhdCI6MTY4MDExMDQ1OSwiZXhwIjoxNjgwMTExMzU5fQ.G3rqlprgqmo0BvoQkhSEJM5rVyBl2xwc40vBkacYUfo",
+							"type": "text",
+							"disabled": true
+						}
+					]
+				},
+				"url": {
+					"raw": "http://localhost:3000/api/v1/restaurant/create",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "3000",
+					"path": [
+						"api",
+						"v1",
+						"restaurant",
+						"create"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Update Restaurant",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyIjp7ImVtYWlsIjoid2ViaS5hbGVrczJAZ21haWwuY29tIiwicGFzc3dvcmQiOiJ0ZXN0MTIzIn0sInN1YiI6IndlYmkuYWxla3MyQGdtYWlsLmNvbSIsImlhdCI6MTY4MDExMDQ1OSwiZXhwIjoxNjgwMTExMzU5fQ.G3rqlprgqmo0BvoQkhSEJM5rVyBl2xwc40vBkacYUfo",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "urlencoded",
+					"urlencoded": [
+						{
+							"key": "menuId",
+							"value": "3",
+							"type": "text"
+						},
+						{
+							"key": "restaurantId",
+							"value": "8",
+							"type": "text"
+						},
+						{
+							"key": "name",
+							"value": "Test Restaurant Updated",
+							"type": "text"
+						},
+						{
+							"key": "city",
+							"value": "Sofia",
+							"type": "text"
+						}
+					]
+				},
+				"url": {
+					"raw": "http://localhost:3000/api/v1/restaurant/update",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "3000",
+					"path": [
+						"api",
+						"v1",
+						"restaurant",
+						"update"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Create Restaurant Menu",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyIjp7ImVtYWlsIjoid2ViaS5hbGVrczJAZ21haWwuY29tIiwicGFzc3dvcmQiOiJ0ZXN0MTIzIn0sInN1YiI6IndlYmkuYWxla3MyQGdtYWlsLmNvbSIsImlhdCI6MTY4MDExMDQ1OSwiZXhwIjoxNjgwMTExMzU5fQ.G3rqlprgqmo0BvoQkhSEJM5rVyBl2xwc40vBkacYUfo",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "urlencoded",
+					"urlencoded": [
+						{
+							"key": "userId",
+							"value": "12",
+							"type": "text"
+						},
+						{
+							"key": "name",
+							"value": "Some awesome menu",
+							"type": "text"
+						},
+						{
+							"key": "description",
+							"value": "Some awesome menu",
+							"type": "text"
+						},
+						{
+							"key": "isActive",
+							"value": "true",
+							"type": "text"
+						}
+					]
+				},
+				"url": {
+					"raw": "http://localhost:3000/api/v1/menu/create",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "3000",
+					"path": [
+						"api",
+						"v1",
+						"menu",
+						"create"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Create Restaurant Menu Product",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyIjp7ImVtYWlsIjoid2ViaS5hbGVrczNAZ21haWwuY29tIiwicGFzc3dvcmQiOiJ0ZXN0MTIzIn0sInN1YiI6IndlYmkuYWxla3MzQGdtYWlsLmNvbSIsImlhdCI6MTY4MDYwNDI0MSwiZXhwIjoxNjgwNjA1MTQxfQ.m1niQ-dxhY7GW3wdCrPc1kIDlu8LrW_PtKT1B973xew",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "urlencoded",
+					"urlencoded": [
+						{
+							"key": "menuId",
+							"value": "3",
+							"type": "text"
+						},
+						{
+							"key": "productId",
+							"value": "10",
+							"type": "text"
+						},
+						{
+							"key": "",
+							"value": "",
+							"type": "text",
+							"disabled": true
+						}
+					]
+				},
+				"url": {
+					"raw": "http://localhost:3000/api/v1/menu-product/create",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "3000",
+					"path": [
+						"api",
+						"v1",
+						"menu-product",
+						"create"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Create Restaurant Product",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyIjp7ImVtYWlsIjoid2ViaS5hbGVrczJAZ21haWwuY29tIiwicGFzc3dvcmQiOiJ0ZXN0MTIzIn0sInN1YiI6IndlYmkuYWxla3MyQGdtYWlsLmNvbSIsImlhdCI6MTY4MTMwMTY1NywiZXhwIjoxNjgxMzAyNTU3fQ.ZkoA3cXwykgxnxtQuvIjBBJlfmyxSTS8-HRFY3gLmO8",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "urlencoded",
+					"urlencoded": [
+						{
+							"key": "categoryId",
+							"value": "6",
+							"type": "text"
+						},
+						{
+							"key": "name",
+							"value": "Svinski parzholi",
+							"type": "text"
+						},
+						{
+							"key": "description",
+							"value": "Svinski parzholi",
+							"type": "text"
+						},
+						{
+							"key": "price",
+							"value": "7",
+							"type": "text"
+						},
+						{
+							"key": "weight",
+							"value": "400",
+							"type": "text"
+						},
+						{
+							"key": "isActive",
+							"value": "true",
+							"type": "text"
+						}
+					]
+				},
+				"url": {
+					"raw": "http://localhost:3000/api/v1/product/create",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "3000",
+					"path": [
+						"api",
+						"v1",
+						"product",
+						"create"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Create Restaurant Category",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyIjp7ImVtYWlsIjoid2ViaS5hbGVrczJAZ21haWwuY29tIiwicGFzc3dvcmQiOiJ0ZXN0MTIzIn0sInN1YiI6IndlYmkuYWxla3MyQGdtYWlsLmNvbSIsImlhdCI6MTY4MDExMTQxOSwiZXhwIjoxNjgwMTEyMzE5fQ.ww0sI026H-few1oiP_xl_QuOHe_JiPvMXGJwxcFMHPg",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "urlencoded",
+					"urlencoded": [
+						{
+							"key": "name",
+							"value": "Pork",
+							"type": "text"
+						},
+						{
+							"key": "",
+							"value": "",
+							"type": "text",
+							"disabled": true
+						},
+						{
+							"key": "",
+							"value": "",
+							"type": "text",
+							"disabled": true
+						}
+					]
+				},
+				"url": {
+					"raw": "http://localhost:3000/api/v1/category/create",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "3000",
+					"path": [
+						"api",
+						"v1",
+						"category",
+						"create"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Create restaurant user",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "urlencoded",
+					"urlencoded": [
+						{
+							"key": "firstName",
+							"value": "Aleks3",
+							"type": "text"
+						},
+						{
+							"key": "lastName",
+							"value": "Sarkisyan3",
+							"type": "text"
+						},
+						{
+							"key": "email",
+							"value": "webi.aleks3@gmail.com",
+							"type": "text"
+						},
+						{
+							"key": "password",
+							"value": "test123",
+							"type": "text"
+						}
+					]
+				},
+				"url": {
+					"raw": "http://localhost:3000/api/v1/user/create",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "3000",
+					"path": [
+						"api",
+						"v1",
+						"user",
+						"create"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Login Restaurant user",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "urlencoded",
+					"urlencoded": [
+						{
+							"key": "email",
+							"value": "webi.aleks2@gmail.com",
+							"type": "text"
+						},
+						{
+							"key": "password",
+							"value": "test123",
+							"type": "text"
+						}
+					]
+				},
+				"url": {
+					"raw": "http://localhost:3000/api/v1/user/login",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "3000",
+					"path": [
+						"api",
+						"v1",
+						"user",
+						"login"
+					]
+				}
+			},
+			"response": []
+		}
+	]
+}

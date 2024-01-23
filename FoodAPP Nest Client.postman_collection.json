@@ -1,0 +1,300 @@
+{
+	"info": {
+		"_postman_id": "2210eef1-4022-47db-a0b0-4c79d570069f",
+		"name": "FoodAPP Nest Client",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "6258473"
+	},
+	"item": [
+		{
+			"name": "Login user",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "urlencoded",
+					"urlencoded": [
+						{
+							"key": "name",
+							"value": "Aleks2",
+							"type": "text",
+							"disabled": true
+						},
+						{
+							"key": "email",
+							"value": "webi.aleks2@gmail.com",
+							"type": "text"
+						},
+						{
+							"key": "password",
+							"value": "test123",
+							"type": "text"
+						}
+					]
+				},
+				"url": {
+					"raw": "http://localhost:3001/api/v1/user/login",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "3001",
+					"path": [
+						"api",
+						"v1",
+						"user",
+						"login"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Create user",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "urlencoded",
+					"urlencoded": [
+						{
+							"key": "name",
+							"value": "Aleks33",
+							"type": "text"
+						},
+						{
+							"key": "email",
+							"value": "webi.aleks33@gmail.com",
+							"type": "text"
+						},
+						{
+							"key": "password",
+							"value": "test123",
+							"type": "text"
+						}
+					]
+				},
+				"url": {
+					"raw": "http://localhost:3001/api/v1/user/create",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "3001",
+					"path": [
+						"api",
+						"v1",
+						"user",
+						"create"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Create order",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyIjp7ImVtYWlsIjoid2ViaS5hbGVrczJAZ21haWwuY29tIiwicGFzc3dvcmQiOiJ0ZXN0MTIzIn0sInN1YiI6IndlYmkuYWxla3MyQGdtYWlsLmNvbSIsImlhdCI6MTY4MTMwMTU5OSwiZXhwIjoxNjgxMzAyNDk5fQ.QDd04_8vix0wpsRU-qxXrsqdP-HbdOxe3WsbZ-fPfLo",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"products\": [\n    {\n        \"productId\": 89,\n        \"quantity\": 5\n    }\n    ],\n    \"restaurantId\": 7\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:3001/api/v1/order/create",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "3001",
+					"path": [
+						"api",
+						"v1",
+						"order",
+						"create"
+					]
+				}
+			},
+			"response": [
+				{
+					"name": "Create order",
+					"originalRequest": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyIjp7ImVtYWlsIjoid2ViaS5hbGVrc0BnbWFpbC5jb20iLCJwYXNzd29yZCI6InRlc3QxMjMifSwic3ViIjoid2ViaS5hbGVrc0BnbWFpbC5jb20iLCJpYXQiOjE2ODA1Mjc3NTYsImV4cCI6MTY4MDUyODY1Nn0.efD1_B1bpRQ09xafytcdX8qdLGVfnx210gvR5t8Xy4c",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"products\": [\n    {\n        \"productId\": 1,\n        \"quantity\": 6\n    },\n    {\n        \"productId\": 7,\n        \"quantity\": 1\n    },\n    {\n        \"productId\": 8,\n        \"quantity\": 4\n    }\n    ],\n    \"restaurantId\": 7\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:3001/order/create",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "3001",
+							"path": [
+								"order",
+								"create"
+							]
+						}
+					},
+					"status": "Created",
+					"code": 201,
+					"_postman_previewlanguage": "json",
+					"header": [
+						{
+							"key": "X-Powered-By",
+							"value": "Express"
+						},
+						{
+							"key": "Content-Type",
+							"value": "application/json; charset=utf-8"
+						},
+						{
+							"key": "Content-Length",
+							"value": "2641"
+						},
+						{
+							"key": "ETag",
+							"value": "W/\"a51-WNc220C94CF5iYnVkPyWiK2GR74\""
+						},
+						{
+							"key": "Date",
+							"value": "Mon, 03 Apr 2023 13:24:20 GMT"
+						},
+						{
+							"key": "Connection",
+							"value": "keep-alive"
+						},
+						{
+							"key": "Keep-Alive",
+							"value": "timeout=5"
+						}
+					],
+					"cookie": [],
+					"body": "{\n    \"success\": true,\n    \"paymentRes\": {\n        \"product\": {\n            \"id\": \"prod_Ne5XfsMK4ww5uS\",\n            \"object\": \"product\",\n            \"active\": true,\n            \"attributes\": [],\n            \"created\": 1680528257,\n            \"default_price\": null,\n            \"description\": \"awesome\",\n            \"images\": [],\n            \"livemode\": false,\n            \"metadata\": {},\n            \"name\": \"My first test product\",\n            \"package_dimensions\": null,\n            \"shippable\": null,\n            \"statement_descriptor\": null,\n            \"tax_code\": null,\n            \"type\": \"service\",\n            \"unit_label\": null,\n            \"updated\": 1680528257,\n            \"url\": null\n        },\n        \"price\": {\n            \"id\": \"price_1MsnMrDDl10gFnpLfMYuUCka\",\n            \"object\": \"price\",\n            \"active\": true,\n            \"billing_scheme\": \"per_unit\",\n            \"created\": 1680528257,\n            \"currency\": \"bgn\",\n            \"custom_unit_amount\": null,\n            \"livemode\": false,\n            \"lookup_key\": null,\n            \"metadata\": {},\n            \"nickname\": null,\n            \"product\": \"prod_Ne5XfsMK4ww5uS\",\n            \"recurring\": null,\n            \"tax_behavior\": \"unspecified\",\n            \"tiers_mode\": null,\n            \"transform_quantity\": null,\n            \"type\": \"one_time\",\n            \"unit_amount\": 1200,\n            \"unit_amount_decimal\": \"1200\"\n        },\n        \"session\": {\n            \"id\": \"cs_test_a1Mz4h2KKSl0PjGTvwm5oTouZpgzLvrVWYYielMgMNZJZpJm5b061ltsCo\",\n            \"object\": \"checkout.session\",\n            \"after_expiration\": null,\n            \"allow_promotion_codes\": null,\n            \"amount_subtotal\": 1200,\n            \"amount_total\": 1200,\n            \"automatic_tax\": {\n                \"enabled\": false,\n                \"status\": null\n            },\n            \"billing_address_collection\": null,\n            \"cancel_url\": \"http://localhost/cancel.html\",\n            \"client_reference_id\": null,\n            \"consent\": null,\n            \"consent_collection\": null,\n            \"created\": 1680528259,\n            \"currency\": \"bgn\",\n            \"currency_conversion\": null,\n            \"custom_fields\": [],\n            \"custom_text\": {\n                \"shipping_address\": null,\n                \"submit\": null\n            },\n            \"customer\": null,\n            \"customer_creation\": \"if_required\",\n            \"customer_details\": null,\n            \"customer_email\": null,\n            \"expires_at\": 1680614659,\n            \"invoice\": null,\n            \"invoice_creation\": {\n                \"enabled\": false,\n                \"invoice_data\": {\n                    \"account_tax_ids\": null,\n                    \"custom_fields\": null,\n                    \"description\": null,\n                    \"footer\": null,\n                    \"metadata\": {},\n                    \"rendering_options\": null\n                }\n            },\n            \"livemode\": false,\n            \"locale\": null,\n            \"metadata\": {},\n            \"mode\": \"payment\",\n            \"payment_intent\": null,\n            \"payment_link\": null,\n            \"payment_method_collection\": \"always\",\n            \"payment_method_options\": {},\n            \"payment_method_types\": [\n                \"card\"\n            ],\n            \"payment_status\": \"unpaid\",\n            \"phone_number_collection\": {\n                \"enabled\": false\n            },\n            \"recovered_from\": null,\n            \"setup_intent\": null,\n            \"shipping_address_collection\": null,\n            \"shipping_cost\": null,\n            \"shipping_details\": null,\n            \"shipping_options\": [],\n            \"status\": \"open\",\n            \"submit_type\": null,\n            \"subscription\": null,\n            \"success_url\": \"http://localhost/success.html\",\n            \"total_details\": {\n                \"amount_discount\": 0,\n                \"amount_shipping\": 0,\n                \"amount_tax\": 0\n            },\n            \"url\": \"https://checkout.stripe.com/c/pay/cs_test_a1Mz4h2KKSl0PjGTvwm5oTouZpgzLvrVWYYielMgMNZJZpJm5b061ltsCo#fidkdWxOYHwnPyd1blpxYHZxWjA0SHdicG5BQWk0NWJDa3VJcjJpb0ZCZDE8UEJDTGN0XEBEM0Rdb29QdE9KYG9sczBHXGRuNDc9NU1tTDZicHRUX182bUpqZjFLQktJdFI3f1IwaW9iRm9yNTVoPHJdd2hzfScpJ2N3amhWYHdzYHcnP3F3cGApJ2lkfGpwcVF8dWAnPyd2bGtiaWBabHFgaCcpJ2BrZGdpYFVpZGZgbWppYWB3dic%2FcXdwYHgl\"\n        }\n    }\n}"
+				}
+			]
+		},
+		{
+			"name": "Greet user",
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"method": "GET",
+				"header": [],
+				"body": {
+					"mode": "urlencoded",
+					"urlencoded": [
+						{
+							"key": "",
+							"value": "",
+							"type": "text",
+							"disabled": true
+						},
+						{
+							"key": "",
+							"value": "",
+							"type": "text",
+							"disabled": true
+						},
+						{
+							"key": "",
+							"value": "",
+							"type": "text",
+							"disabled": true
+						}
+					]
+				},
+				"url": {
+					"raw": "http://localhost:3001/api/v1/user/greet",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "3001",
+					"path": [
+						"api",
+						"v1",
+						"user",
+						"greet"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Get all restaurants",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:3001/api/v1/restaurant/all",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "3001",
+					"path": [
+						"api",
+						"v1",
+						"restaurant",
+						"all"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Get restaurant menu",
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyIjp7ImVtYWlsIjoid2ViaS5hbGVrczJAZ21haWwuY29tIiwicGFzc3dvcmQiOiJ0ZXN0MTIzIn0sInN1YiI6IndlYmkuYWxla3MyQGdtYWlsLmNvbSIsImlhdCI6MTY4MzYzOTMyMCwiZXhwIjoxNjgzNjQwMjIwfQ.-6PdPh4Zv-N9KJOeg3OvQ3eIcsriyS2A-EKZvM50sTU",
+						"type": "text"
+					}
+				],
+				"url": {
+					"raw": "http://localhost:3001/api/v1/menu/8",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "3001",
+					"path": [
+						"api",
+						"v1",
+						"menu",
+						"8"
+					]
+				}
+			},
+			"response": []
+		}
+	]
+}

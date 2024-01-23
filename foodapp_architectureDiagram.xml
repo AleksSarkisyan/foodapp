@@ -1,0 +1,63 @@
+<mxfile host="app.diagrams.net" modified="2024-01-11T16:38:23.490Z" agent="Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36" etag="Vbt3i1la9LAJScJiVZDE" version="22.1.18" type="device">
+  <diagram name="Page-1" id="WSLDDHdjUmvQyxz06lse">
+    <mxGraphModel dx="1602" dy="734" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="850" pageHeight="1100" math="0" shadow="0">
+      <root>
+        <mxCell id="0" />
+        <mxCell id="1" parent="0" />
+        <mxCell id="zjM_NAhiLnI4BCAh5Zje-15" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;" edge="1" parent="1" source="zjM_NAhiLnI4BCAh5Zje-1" target="zjM_NAhiLnI4BCAh5Zje-7">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="125" y="180" />
+              <mxPoint x="125" y="180" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="zjM_NAhiLnI4BCAh5Zje-1" value="&lt;font style=&quot;font-size: 22px;&quot;&gt;frontend/client&lt;/font&gt;" style="whiteSpace=wrap;html=1;aspect=fixed;" vertex="1" parent="1">
+          <mxGeometry x="50" y="250" width="150" height="150" as="geometry" />
+        </mxCell>
+        <mxCell id="zjM_NAhiLnI4BCAh5Zje-2" value="" style="endArrow=classic;html=1;rounded=0;fontStyle=1;shadow=0;jumpSize=8;endSize=9;sourcePerimeterSpacing=4;startSize=10;targetPerimeterSpacing=4;curved=0;strokeWidth=3;" edge="1" parent="1">
+          <mxGeometry width="50" height="50" relative="1" as="geometry">
+            <mxPoint x="200" y="324.5" as="sourcePoint" />
+            <mxPoint x="290" y="324.5" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="zjM_NAhiLnI4BCAh5Zje-4" value="&lt;font style=&quot;font-size: 22px;&quot;&gt;http-client-api&lt;/font&gt;" style="whiteSpace=wrap;html=1;aspect=fixed;" vertex="1" parent="1">
+          <mxGeometry x="290" y="250" width="150" height="150" as="geometry" />
+        </mxCell>
+        <mxCell id="zjM_NAhiLnI4BCAh5Zje-5" value="" style="endArrow=classic;html=1;rounded=0;fontStyle=1;shadow=0;jumpSize=8;endSize=9;sourcePerimeterSpacing=4;startSize=10;targetPerimeterSpacing=4;curved=0;strokeWidth=3;" edge="1" parent="1">
+          <mxGeometry width="50" height="50" relative="1" as="geometry">
+            <mxPoint x="440" y="324.5" as="sourcePoint" />
+            <mxPoint x="530" y="324.5" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="zjM_NAhiLnI4BCAh5Zje-6" value="&lt;font style=&quot;font-size: 22px;&quot;&gt;microservices&lt;/font&gt;" style="whiteSpace=wrap;html=1;aspect=fixed;" vertex="1" parent="1">
+          <mxGeometry x="530" y="250" width="150" height="150" as="geometry" />
+        </mxCell>
+        <mxCell id="zjM_NAhiLnI4BCAh5Zje-7" value="&lt;font style=&quot;font-size: 22px;&quot;&gt;Redis&lt;/font&gt;" style="whiteSpace=wrap;html=1;aspect=fixed;" vertex="1" parent="1">
+          <mxGeometry x="60" y="10" width="150" height="150" as="geometry" />
+        </mxCell>
+        <mxCell id="zjM_NAhiLnI4BCAh5Zje-9" value="&lt;font style=&quot;font-size: 22px;&quot;&gt;MySql&lt;/font&gt;" style="whiteSpace=wrap;html=1;aspect=fixed;" vertex="1" parent="1">
+          <mxGeometry x="770" y="250" width="150" height="150" as="geometry" />
+        </mxCell>
+        <mxCell id="zjM_NAhiLnI4BCAh5Zje-14" value="" style="endArrow=classic;html=1;rounded=0;fontStyle=1;shadow=0;jumpSize=8;endSize=9;sourcePerimeterSpacing=4;startSize=10;targetPerimeterSpacing=4;curved=0;strokeWidth=3;" edge="1" parent="1">
+          <mxGeometry width="50" height="50" relative="1" as="geometry">
+            <mxPoint x="680" y="324.5" as="sourcePoint" />
+            <mxPoint x="770" y="324.5" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="zjM_NAhiLnI4BCAh5Zje-20" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;" edge="1" parent="1" target="zjM_NAhiLnI4BCAh5Zje-21">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="605" y="250" as="sourcePoint" />
+            <Array as="points">
+              <mxPoint x="605" y="180" />
+              <mxPoint x="605" y="180" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="zjM_NAhiLnI4BCAh5Zje-21" value="&lt;font style=&quot;font-size: 22px;&quot;&gt;Redis&lt;/font&gt;" style="whiteSpace=wrap;html=1;aspect=fixed;" vertex="1" parent="1">
+          <mxGeometry x="540" y="10" width="150" height="150" as="geometry" />
+        </mxCell>
+      </root>
+    </mxGraphModel>
+  </diagram>
+</mxfile>
