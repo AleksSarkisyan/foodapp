@@ -1,0 +1,5 @@
+"id","user_id","name","description","is_active","created_at","updated_at"
+1,11,Aleks's Restaurant Menu,test,1,"2023-03-06 14:58:08","2023-03-06 14:58:08"
+2,12,Aleks's Restaurant Menu,test,1,"2023-03-06 15:56:42","2023-03-06 15:56:42"
+3,12,Some awesome menu,Some awesome menu,1,"2023-03-29 20:27:37","2023-03-29 20:27:37"
+4,12,Test menu,Test menu,1,"2024-01-12 17:01:27","2024-01-12 17:01:27"

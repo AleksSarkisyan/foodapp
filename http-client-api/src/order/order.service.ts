@@ -112,6 +112,7 @@ export class OrderService {
     }
   }
 
+  /** To do - refactor this to fetch the user from Redis instead ? */
   async getUserFromToken(createOrderDto: Types.Order.CreateOrderDto | { token: string }) {
     let userToken = this.userClient.send({ cmd: Enums.User.Commands.GET_USER_FROM_TOKEN }, { token: createOrderDto.token });
     
